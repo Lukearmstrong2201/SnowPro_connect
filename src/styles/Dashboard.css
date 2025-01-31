@@ -1,0 +1,64 @@
+.dashboard-container {
+  position: relative;
+}
+
+h3 {
+  color: #fff;
+  font-family: "Arial", sans-serif;
+  font-size: 1.5rem;
+}
+
+.section-title {
+  color: rgb(82, 82, 82);
+  text-align: center;
+}
+
+.personal-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  background-color: #f4f4f4;
+  gap: 20px;
+  padding: 20px;
+}
+
+@media (max-width: 768px) {
+  .personal-details-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  background-color: #2c2c2c;
+  border-radius: 10px;
+  margin: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+  top: 10px;
+  left: 10px;
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.card p {
+  font-size: 1rem;
+  margin-top: 20px;
+  color: #ccc;
+}
+
+.lesson-management-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  background-color: #f4f4f4;
+  gap: 20px;
+  padding: 20px;
+}
+
+.upcoming-lessons-section {
+  grid-row: span 2;
+}
