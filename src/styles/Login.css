@@ -1,0 +1,100 @@
+.login-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.login-section {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  width: 400px;
+  position: relative;
+}
+
+.signInTitle {
+  color: #1e73be;
+  font-size: 28px;
+  position: absolute; /* Fixes h1 to the top-left */
+  top: 20px; /* Adjust the top distance */
+  left: 20px; /* Adjust the left distance */
+  margin: 0;
+}
+
+h2 {
+  text-align: center;
+  font-size: 22px;
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
+  padding-top: 50px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+}
+
+input {
+  margin-bottom: 15px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  width: 100%;
+}
+
+.checkbox-remember {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.checkbox-remember input {
+  margin-right: 8px;
+  vertical-align: middle; /* Ensures checkbox is aligned with text */
+}
+
+.checkbox-remember label {
+  font-size: 14px;
+  margin: 0;
+  vertical-align: middle; /* Ensures label is aligned with the checkbox */
+}
+
+button {
+  padding: 12px;
+  border: none;
+  background-color: #1e73be;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 100%;
+}
+
+button:hover {
+  background-color: #144a7b;
+}
+
+.lost-password {
+  display: block;
+  text-align: right;
+  margin-top: 10px;
+  color: #1e73be;
+  text-decoration: none;
+}
+
+.lost-password:hover {
+  text-decoration: underline;
+}

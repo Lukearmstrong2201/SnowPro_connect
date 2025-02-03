@@ -4,7 +4,7 @@ import "../styles/Dashboard.css";
 export default function Dashboard() {
   return (
     <>
-      <section>
+      <section className="dashboard-container">
         <h3 className="section-title">Personal Information</h3>
         <div className="personal-details-grid">
           <div className="profile-name card">

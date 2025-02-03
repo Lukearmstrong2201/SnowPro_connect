@@ -1,8 +1,13 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/Header.css";
 
 export default function Header() {
+  const navigate = useNavigate();
+
+  const handleLoginClick = () => navigate("/login");
+  const handleRegisterClick = () => navigate("/register");
+
   return (
     <header className="header">
       <div className="container">
@@ -27,8 +32,8 @@ export default function Header() {
           </ul>
         </nav>
         <div className="sign-in-buttons">
-          <button>Sign in</button>
-          <button>Register</button>
+          <button onClick={handleLoginClick}>Sign in</button>
+          <button onClick={handleRegisterClick}>Register</button>
         </div>
       </div>
     </header>
