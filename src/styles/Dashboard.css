@@ -1,15 +1,19 @@
+body {
+  background-color: #eb6009;
+}
+
 .dashboard-container {
   position: relative;
 }
 
 h3 {
-  color: #fff;
+  color: #000000;
   font-family: "Arial", sans-serif;
   font-size: 1.5rem;
 }
 
 .section-title {
-  color: rgb(82, 82, 82);
+  color: rgb(0, 0, 0);
   text-align: center;
 }
 
@@ -17,9 +21,10 @@ h3 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto;
-  background-color: #f4f4f4;
   gap: 20px;
   padding: 20px;
+  margin: 20px;
+  border-radius: 8px;
 }
 
 @media (max-width: 768px) {
@@ -33,7 +38,8 @@ h3 {
   border-radius: 10px;
   margin: 10px;
   padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(238, 238, 238, 0.1);
+  background-color: rgb(255, 255, 255);
 }
 
 .card h3 {
@@ -47,16 +53,17 @@ h3 {
 .card p {
   font-size: 1rem;
   margin-top: 20px;
-  color: #ccc;
+  color: #000000;
 }
 
 .lesson-management-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  background-color: #f4f4f4;
   gap: 20px;
   padding: 20px;
+  margin: 20px;
+  border-radius: 8px;
 }
 
 .upcoming-lessons-section {

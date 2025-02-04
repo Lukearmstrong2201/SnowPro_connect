@@ -24,7 +24,7 @@ export default function Header() {
               <Link to="/about">About</Link>
             </li>
             <li>
-              <Link to="/booking">Book a Lesson</Link>
+              <Link to="/resorts">Resorts</Link>
             </li>
             <li>
               <Link to="/dashboard">Dashboard</Link>

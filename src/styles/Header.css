@@ -2,9 +2,12 @@
   position: relative;
   top: 0;
   width: 100%;
-  background: linear-gradient(135deg, #3a6073 0%, #16222a 100%);
+  background-color: rgba(255,255,255,0.5)
   padding: 30px 0;
   z-index: 10;
+  font-family: "Poppins", Arial, Helvetica, "Lucida", serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .container {
@@ -21,7 +24,8 @@
 }
 
 .logo h1 {
-  color: white;
+  color: rgb(0, 0, 0);
+  font-weight: 800;
   font-size: 1.8rem;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -35,7 +39,8 @@
 }
 
 .nav-links a {
-  color: white;
+  color: rgb(255, 255, 255);
+  font-weight: 700;
   text-decoration: none;
   font-size: 1rem;
   transition: color 0.3s ease, transform 0.3s ease;
