@@ -1,3 +1,20 @@
+.wrapper-container {
+  position: relative;
+}
+
+.login-hero1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0;
+}
+
+.login-hero2 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
 .login-page-container {
   display: flex;
   justify-content: center;
@@ -6,17 +23,19 @@
 }
 
 .login-section {
-  background: #fff;
+  background: #111111;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   padding: 40px;
-  width: 400px;
+  width: 70%;
   position: relative;
+  border-radius: 10px;
+  margin-top: 100px;
 }
 
 .signInTitle {
-  color: #1e73be;
+  color: #ffffff;
   font-size: 28px;
   position: absolute; /* Fixes h1 to the top-left */
   top: 20px; /* Adjust the top distance */
@@ -24,12 +43,12 @@
   margin: 0;
 }
 
-h2 {
+.login-header {
   text-align: center;
   font-size: 22px;
   margin-top: 0;
   margin-bottom: 20px;
-  color: #333;
+  color: #ffffff;
   padding-top: 50px;
 }
 
@@ -38,12 +57,12 @@ form {
   flex-direction: column;
 }
 
-label {
+.signin-label {
   margin-top: 15px;
   margin-bottom: 5px;
   font-weight: bold;
   font-size: 14px;
-  color: #333;
+  color: #ffffff;
 }
 
 input {
@@ -61,6 +80,11 @@ input {
   margin-bottom: 20px;
 }
 
+#remember-me {
+  width: 20px;
+  margin: 0px 10px 0px 0px;
+}
+
 .checkbox-remember input {
   margin-right: 8px;
   vertical-align: middle; /* Ensures checkbox is aligned with text */
@@ -72,18 +96,19 @@ input {
   vertical-align: middle; /* Ensures label is aligned with the checkbox */
 }
 
-button {
+.login-button {
   padding: 12px;
   border: none;
-  background-color: #1e73be;
+  background-color: #eb6009;
   color: white;
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s;
-  width: 100%;
+  width: 30%;
+  border-radius: 10px;
 }
 
-button:hover {
+.login-button:hover {
   background-color: #144a7b;
 }
 
