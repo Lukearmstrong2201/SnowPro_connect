@@ -1,29 +1,43 @@
-const API_KEY = "10249de295msh286762ddd8dd817p10df24jsn84a15d6b41d0";
+const API_KEY = ""; //Enter
 const BASE_URL = "https://ski-resorts-and-conditions.p.rapidapi.com/v1/resort";
-let url = `${BASE_URL}/whistler-blackcomb`; //STATE NEEDS LIFTING FROM RESORTS PAGE (Replace Resort with formatted string)
 
-const options = {
-  method: "GET",
-  headers: {
-    "x-rapidapi-key": `${API_KEY}`,
-    "x-rapidapi-host": "ski-resorts-and-conditions.p.rapidapi.com",
-  },
-};
+export const getSkiResortData = async (resortName) => {
+  let formattedResortName = resortName.toLowerCase().replace(/\s+/g, "-");
 
-//object properties are: base, season, twelve_hours, twentyfour_hours, fortyeight_hours (integers represent cm)
-export const getSkiResortConditions = async () => {
+  let url = `${BASE_URL}/${formattedResortName}`;
+
+  const options = {
+    method: "GET",
+    headers: {
+      "x-rapidapi-key": `${API_KEY}`,
+      "x-rapidapi-host": "ski-resorts-and-conditions.p.rapidapi.com",
+    },
+  };
+
   try {
     const response = await fetch(url, options);
-    const data = await data.json();
-    return data.conditions;
+    const result = await response.json();
+
+    //  check if the data exists
+    if (!result || !result.data) {
+      throw new Error("Invalid response structure from API");
+    }
+
+    // Return all the required data as an object
+    const data = result.data; // The main resort data (name, country, etc.)
+    return {
+      data: {
+        name: data.name,
+        country: data.country,
+        region: data.region,
+        href: data.href,
+      },
+      location: data.location, // latitude, longitude
+      conditions: data.conditions, // base, season, twelve_hours, twentyfour_hours, fortyeight_hours, seven_days
+      lifts: data.lifts, // lifts status and stats
+    };
   } catch (error) {
     console.error("Error fetching ski resort data:", error);
+    return null;
   }
 };
-
-export const getSkiResort = async () => {
-  const response = await fetch(url, options);
-  const data = await data.json();
-  return data;
-};
-getSkiResort();

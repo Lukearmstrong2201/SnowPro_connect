@@ -32,8 +32,12 @@ export default function Header() {
           </ul>
         </nav>
         <div className="sign-in-buttons">
-          <button onClick={handleLoginClick}>Sign in</button>
-          <button onClick={handleRegisterClick}>Register</button>
+          <button className="sign-in-button" onClick={handleLoginClick}>
+            Sign in
+          </button>
+          <button className="register-button" onClick={handleRegisterClick}>
+            Register
+          </button>
         </div>
       </div>
     </header>
