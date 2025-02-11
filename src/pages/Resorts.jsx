@@ -1,26 +1,30 @@
 import React, { useState, useEffect } from "react";
 import "../styles/Resorts.css";
-import { getSkiResortData } from "../services/api";
-
-// Demo Ski Resort Data
-const resortData = [
-  { id: 1, name: "Whistler Blackcomb", location: "British Columbia, Canada" },
-  { id: 2, name: "Aspen Mountain", location: "Colorado, USA" },
-  { id: 3, name: "Banff Sunshine", location: "Alberta, Canada" },
-  { id: 4, name: "Zermatt", location: "Switzerland" },
-  { id: 5, name: "Chamonix", location: "France" },
-];
+import { getResortsList, getSkiResortData } from "../services/api";
 
 export default function Resort() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredResorts, setFilteredResorts] = useState(resortData);
+  const [resorts, setResorts] = useState([]);
+  const [filteredResorts, setFilteredResorts] = useState([]);
   const [selectedResort, setSelectedResort] = useState(null);
   const [snowBase, setSnowBase] = useState(null);
   const [location, setLocation] = useState(null);
   const [lifts, setLifts] = useState(null);
   const [generalData, setGeneralData] = useState(null);
+  const [isFetching, setIsFetching] = useState(false);
 
-  // Handle search input change
+  // Fetch the list of resorts from the API when the component mounts
+  useEffect(() => {
+    const fetchResorts = async () => {
+      const data = await getResortsList();
+      setResorts(data); // Set fetched resorts data
+      setFilteredResorts(data); // Set filtered resorts initially
+    };
+
+    fetchResorts();
+  }, []);
+
+  // Handle search input change to filter resorts
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
@@ -28,19 +32,20 @@ export default function Resort() {
   // Filter resorts based on the search query
   useEffect(() => {
     const timer = setTimeout(() => {
-      const filtered = resortData.filter((resort) =>
+      const filtered = resorts.filter((resort) =>
         resort.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredResorts(filtered);
     }, 500);
 
     return () => clearTimeout(timer); // Clear the timer on every change
-  }, [searchQuery]);
+  }, [searchQuery, resorts]);
 
   // Show dashboard when a resort is selected
   const handleResortSelect = async (resort) => {
-    if (selectedResort?.name === resort.name) return; // Avoid API call if the same resort is selected again
+    if (selectedResort?.name === resort.name || isFetching) return; // Avoid unnecessary requests and if already fetching
     setSelectedResort(resort);
+    setIsFetching(true);
 
     // Fetch all data for the selected resort
     const data = await getSkiResortData(resort.name);
@@ -51,6 +56,8 @@ export default function Resort() {
       setSnowBase(data.conditions.base); // Set snow base
       setLifts(data.lifts); // Set lifts status and stats
     }
+
+    setIsFetching(false); // Reset fetching state
   };
 
   return (
