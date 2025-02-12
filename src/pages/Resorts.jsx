@@ -21,7 +21,7 @@ export default function Resort() {
 
       setResortsData(data); // Store full objects
       setResorts(data.map((resort) => resort.name)); // Store only names for search
-      setFilteredResorts([]); // Start with an empty list (fix: hide resorts initially)
+      setFilteredResorts([]); // Start with an empty list
     };
 
     fetchResorts();
@@ -36,6 +36,7 @@ export default function Resort() {
   useEffect(() => {
     if (searchQuery.trim() === "") {
       setFilteredResorts([]); // Show nothing if search bar is empty
+      setSelectedResort(null); // Reset resort details when search bar is cleared
     } else {
       const filtered = resorts.filter((resort) =>
         resort.toLowerCase().includes(searchQuery.toLowerCase())
