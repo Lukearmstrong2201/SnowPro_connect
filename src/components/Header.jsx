@@ -12,7 +12,11 @@ export default function Header() {
     <header className="header">
       <div className="container">
         <div className="logo">
-          <img src="#" />
+          <img
+            src="../../public/images/logo.webp"
+            alt="SnowPro Connect Logo"
+            className="logo-img"
+          />
           <h1>SnowPro Connect</h1>
         </div>
         <nav>

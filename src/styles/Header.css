@@ -1,13 +1,14 @@
 .header {
-  position: relative;
+  position: fixed;
   top: 0;
   width: 100%;
-  background-color: rgb(30, 62, 98, 1);
-  padding: 30px 0;
+  background-color: #1e3e62;
+  padding: 20px 0;
   z-index: 10;
   font-family: "Poppins", Arial, Helvetica, "Lucida", serif;
   text-transform: uppercase;
   letter-spacing: 1px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .container {
@@ -21,13 +22,20 @@
 
 .logo {
   display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-img {
+  width: 50px;
+  height: auto;
 }
 
 .logo h1 {
-  color: rgb(0, 0, 0);
-  font-weight: 800;
-  font-size: 1.8rem;
-  letter-spacing: 2px;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
 }
 
@@ -35,35 +43,60 @@
   list-style: none;
   display: flex;
   gap: 20px;
-  margin: 20px;
+  margin: 0px;
+  padding: 0;
 }
 
 .nav-links a {
-  color: rgb(255, 255, 255);
-  font-weight: 700;
+  color: #ffffff;
+  font-weight: 600;
   text-decoration: none;
   font-size: 1rem;
   transition: color 0.3s ease, transform 0.3s ease;
 }
 
+.nav-links a:hover {
+  color: #f0a500;
+  transform: scale(1.05);
+}
+
 .sign-in-buttons {
   display: flex;
-  margin: 5px;
   gap: 5px;
 }
 
-.sign-in-button {
-  background-color: #eb6009;
-  color: white;
-  border-radius: 5px;
-  padding: 20px;
-  font-family: Inter, "prompt", Helvetica, Arial, sans-serif;
-}
-
+.sign-in-button,
 .register-button {
   background-color: #eb6009;
   color: white;
   border-radius: 5px;
-  padding: 20px;
-  font-family: Inter, "prompt", Helvetica, Arial, sans-serif;
+  padding: 12px 18px;
+  font-size: 0.9rem;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sign-in-button:hover,
+.register-button:hover {
+  background-color: #cf4f05;
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .nav-links {
+    margin-top: 10px;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .sign-in-buttons {
+    margin-top: 10px;
+  }
 }
