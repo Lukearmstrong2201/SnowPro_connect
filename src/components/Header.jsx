@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Header.css";
+import Logo from "./Logo";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -12,11 +13,7 @@ export default function Header() {
     <header className="header">
       <div className="container">
         <div className="logo">
-          <img
-            src="../../public/images/logo.webp"
-            alt="SnowPro Connect Logo"
-            className="logo-img"
-          />
+          <Logo className="logo-svg" />
           <h1>SnowPro Connect</h1>
         </div>
         <nav>

@@ -1,0 +1,26 @@
+/* Logo Styling */
+.logo-svg {
+  width: 60px; /* Adjust size as needed */
+  height: auto;
+  fill: white; /* Matches theme */
+  transition: transform 0.3s ease, fill 0.3s ease;
+}
+
+/* Hover effect to add slight scaling */
+.logo-svg:hover {
+  transform: scale(1.1);
+  fill: #f0a500; /* Accent color on hover */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .logo-svg {
+    width: 50px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-svg {
+    width: 40px;
+  }
+}
