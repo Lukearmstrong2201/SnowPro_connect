@@ -46,7 +46,7 @@ h2 {
 
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 20px;
   margin-top: 20px;
 }
@@ -67,4 +67,34 @@ h2 {
 .grid-item p {
   font-size: 14px;
   color: #666;
+}
+
+.lift-status-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+}
+
+.lift-status-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  color: #666;
+}
+
+.status-circle {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-circle.open {
+  background-color: green;
+}
+
+.status-circle.closed {
+  background-color: rgb(255, 0, 0);
 }

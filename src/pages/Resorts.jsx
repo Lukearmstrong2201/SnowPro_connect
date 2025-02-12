@@ -170,21 +170,28 @@ export default function Resort() {
             <div className="grid-item">
               <h4>Lift Status</h4>
               {lifts?.status && Object.keys(lifts.status).length > 0 ? (
-                <ul>
+                <div className="lift-status-container">
                   {Object.entries(lifts.status).map(
                     ([liftName, liftStatus]) => (
-                      <li key={liftName}>
-                        <strong>{liftName}:</strong> {liftStatus}
-                      </li>
+                      <div key={liftName} className="lift-status-item">
+                        <span
+                          className={`status-circle ${
+                            liftStatus.toLowerCase() === "open"
+                              ? "open"
+                              : "closed"
+                          }`}
+                        ></span>
+                        <strong>{liftName}</strong>
+                      </div>
                     )
                   )}
-                </ul>
+                </div>
               ) : (
                 <p>No lift status data available.</p>
               )}
             </div>
 
-            {/* Lift Statistics (Separate Grid Item) */}
+            {/* Lift Statistics */}
             <div className="grid-item">
               <h4>Lift Statistics</h4>
               {lifts?.stats ? (
