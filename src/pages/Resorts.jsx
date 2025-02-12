@@ -79,7 +79,10 @@ export default function Resort() {
       setGeneralData(data.data || {});
       setLocation(data.location || { latitude: "N/A", longitude: "N/A" });
       setSnowBase(data.conditions?.base ?? "N/A"); // Safe access with default value
-      setLifts(data.lifts || { status: "N/A", stats: "N/A" });
+      setLifts({
+        status: data.lifts?.status ?? {},
+        stats: data.lifts?.stats ?? {},
+      });
     } catch (error) {
       console.error("Error fetching resort details:", error);
       setGeneralData(null);
@@ -163,6 +166,45 @@ export default function Resort() {
               <p>
                 {snowBase !== "N/A" ? `${snowBase} cm` : "Data not available"}
               </p>
+            </div>
+            <div className="grid-item">
+              <h4>Lift Status</h4>
+              {lifts?.status && Object.keys(lifts.status).length > 0 ? (
+                <ul>
+                  {Object.entries(lifts.status).map(
+                    ([liftName, liftStatus]) => (
+                      <li key={liftName}>
+                        <strong>{liftName}:</strong> {liftStatus}
+                      </li>
+                    )
+                  )}
+                </ul>
+              ) : (
+                <p>No lift status data available.</p>
+              )}
+            </div>
+
+            {/* Lift Statistics (Separate Grid Item) */}
+            <div className="grid-item">
+              <h4>Lift Statistics</h4>
+              {lifts?.stats ? (
+                <div>
+                  <p>
+                    <strong>Open:</strong> {lifts.stats.open ?? "N/A"}
+                  </p>
+                  <p>
+                    <strong>On Hold:</strong> {lifts.stats.hold ?? "N/A"}
+                  </p>
+                  <p>
+                    <strong>Scheduled:</strong> {lifts.stats.scheduled ?? "N/A"}
+                  </p>
+                  <p>
+                    <strong>Closed:</strong> {lifts.stats.closed ?? "N/A"}
+                  </p>
+                </div>
+              ) : (
+                <p>No lift statistics available.</p>
+              )}
             </div>
           </div>
         </div>
