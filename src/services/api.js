@@ -1,10 +1,9 @@
-// API Key and base URL
 const API_KEY = "62f0873bb4msh3cea61075dcbf82p114512jsn86cf70f5e42d";
 const BASE_URL = "https://ski-resorts-and-conditions.p.rapidapi.com/v1";
 
 // Fetch the list of resorts
 export const getResortsList = async () => {
-  const url = `${BASE_URL}/resort`; // API endpoint to get the list of resorts
+  const url = `${BASE_URL}/resort`;
   const options = {
     method: "GET",
     headers: {
@@ -15,18 +14,34 @@ export const getResortsList = async () => {
 
   try {
     const response = await fetch(url, options);
+
+    if (!response.ok) {
+      throw new Error(`API request failed with status: ${response.status}`);
+    }
+
     const result = await response.json();
-    return result; // Assuming the result is an array of resorts
+
+    if (!result.data) {
+      return [];
+    }
+
+    return result.data.map((resort) => ({
+      id: resort.id || Math.random().toString(36).substr(2, 9), // Assign random ID if missing
+      name: resort.name || "Unknown Resort",
+      location: resort.location || "Location not available",
+    }));
   } catch (error) {
     console.error("Error fetching resorts list:", error);
-    return []; // Return an empty array if an error occurs
+    return [];
   }
 };
 
-// Fetch the details for a specific resort
+// Fetch ski resort data by name
 export const getSkiResortData = async (resortName) => {
-  // Format the resort name into the correct format for the URL
-  let formattedResortName = resortName.toLowerCase().replace(/\s+/g, "-");
+  // Properly format resort name for API request
+  let formattedResortName = encodeURIComponent(
+    resortName.toLowerCase().replace(/\s+/g, "-")
+  );
 
   const url = `${BASE_URL}/resort/${formattedResortName}`;
   const options = {
@@ -39,27 +54,36 @@ export const getSkiResortData = async (resortName) => {
 
   try {
     const response = await fetch(url, options);
+
+    if (!response.ok) {
+      throw new Error(`API request failed with status: ${response.status}`);
+    }
+
     const result = await response.json();
 
-    // Check if the result data exists
     if (!result || !result.data) {
       throw new Error("Invalid response structure from API");
     }
 
     const data = result.data;
+
     return {
       data: {
-        name: data.name,
-        country: data.country,
-        region: data.region,
-        href: data.href,
+        name: data.name || "Unknown",
+        country: data.country || "Unknown",
+        region: data.region || "Unknown",
+        href: data.href || "#",
       },
-      location: data.location, // latitude, longitude
-      conditions: data.conditions, // base, season, snowfall
-      lifts: data.lifts, // lifts status and stats
+      location: data.location || { latitude: "N/A", longitude: "N/A" },
+      conditions: data.conditions || {
+        base: "N/A",
+        season: "N/A",
+        snowfall: "N/A",
+      },
+      lifts: data.lifts || { status: "N/A", stats: "N/A" },
     };
   } catch (error) {
     console.error("Error fetching ski resort data:", error);
-    return null; // Return null in case of an error
+    return { error: true, message: error.message };
   }
 };

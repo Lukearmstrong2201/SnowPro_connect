@@ -4,7 +4,8 @@ import { getResortsList, getSkiResortData } from "../services/api";
 
 export default function Resort() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [resorts, setResorts] = useState([]);
+  const [resortsData, setResortsData] = useState([]); // Store full resort objects
+  const [resorts, setResorts] = useState([]); // Store just names for search
   const [filteredResorts, setFilteredResorts] = useState([]);
   const [selectedResort, setSelectedResort] = useState(null);
   const [snowBase, setSnowBase] = useState(null);
@@ -13,56 +14,86 @@ export default function Resort() {
   const [generalData, setGeneralData] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
 
-  // Fetch the list of resorts from the API when the component mounts
+  // Fetch resorts list when the component mounts
   useEffect(() => {
     const fetchResorts = async () => {
-      const data = await getResortsList();
-      setResorts(data); // Set fetched resorts data
-      setFilteredResorts(data); // Set filtered resorts initially
+      const data = await getResortsList(); // Returns a list of resort objects
+
+      setResortsData(data); // Store full objects
+      setResorts(data.map((resort) => resort.name)); // Store only names for search
+      setFilteredResorts([]); // Start with an empty list (fix: hide resorts initially)
     };
 
     fetchResorts();
   }, []);
 
-  // Handle search input change to filter resorts
+  // Handle search input change
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
 
   // Filter resorts based on the search query
   useEffect(() => {
-    const timer = setTimeout(() => {
+    if (searchQuery.trim() === "") {
+      setFilteredResorts([]); // Show nothing if search bar is empty
+    } else {
       const filtered = resorts.filter((resort) =>
-        resort.name.toLowerCase().includes(searchQuery.toLowerCase())
+        resort.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredResorts(filtered);
-    }, 500);
-
-    return () => clearTimeout(timer); // Clear the timer on every change
+    }
   }, [searchQuery, resorts]);
 
   // Show dashboard when a resort is selected
-  const handleResortSelect = async (resort) => {
-    if (selectedResort?.name === resort.name || isFetching) return; // Avoid unnecessary requests and if already fetching
-    setSelectedResort(resort);
-    setIsFetching(true);
+  const handleResortSelect = async (resortName) => {
+    if (isFetching) return; // Prevent multiple fetches
 
-    // Fetch all data for the selected resort
-    const data = await getSkiResortData(resort.name);
+    // Find the full resort object based on the name
+    const fullResort = resortsData.find((resort) => resort.name === resortName);
 
-    if (data) {
-      setGeneralData(data.data); // Set general data (name, country, region)
-      setLocation(data.location); // Set location data (latitude, longitude)
-      setSnowBase(data.conditions.base); // Set snow base
-      setLifts(data.lifts); // Set lifts status and stats
+    if (!fullResort) {
+      console.error("Resort not found in the list:", resortName);
+      return;
     }
 
-    setIsFetching(false); // Reset fetching state
+    setSelectedResort(fullResort);
+    setIsFetching(true);
+
+    try {
+      // Fetch all data for the selected resort
+      const data = await getSkiResortData(fullResort.name);
+
+      if (!data || data.error) {
+        console.error(
+          "Failed to fetch resort details:",
+          data ? data.message : "Unknown error"
+        );
+        setGeneralData(null);
+        setLocation(null);
+        setSnowBase("N/A");
+        setLifts(null);
+        setIsFetching(false);
+        return;
+      }
+
+      setGeneralData(data.data || {});
+      setLocation(data.location || { latitude: "N/A", longitude: "N/A" });
+      setSnowBase(data.conditions?.base ?? "N/A"); // Safe access with default value
+      setLifts(data.lifts || { status: "N/A", stats: "N/A" });
+    } catch (error) {
+      console.error("Error fetching resort details:", error);
+      setGeneralData(null);
+      setLocation(null);
+      setSnowBase("N/A");
+      setLifts(null);
+    }
+
+    setIsFetching(false);
   };
 
   return (
     <div className="resorts-container">
-      <h2> Choose your Resort</h2>
+      <h2>Choose Your Resort</h2>
 
       <input
         type="text"
@@ -74,19 +105,18 @@ export default function Resort() {
 
       <div className="resorts-list">
         {filteredResorts.length > 0 ? (
-          filteredResorts.map((resort) => (
+          filteredResorts.map((resortName) => (
             <div
-              key={resort.id}
+              key={resortName}
               className="resort-item"
-              onClick={() => handleResortSelect(resort)} // Fetch data on resort click
+              onClick={() => handleResortSelect(resortName)}
             >
-              <h3>{resort.name}</h3>
-              <p>{resort.location}</p>
+              <h3>{resortName}</h3>
             </div>
           ))
-        ) : (
+        ) : searchQuery ? ( // Show "No resorts found" only if user has typed something
           <p>No resorts found</p>
-        )}
+        ) : null}
       </div>
 
       {selectedResort && (
@@ -94,17 +124,16 @@ export default function Resort() {
           <h3>{selectedResort.name} - Resort Information</h3>
 
           <div className="grid-container">
-            {/* General Data */}
             <div className="grid-item">
               <h4>General Data</h4>
               {generalData ? (
                 <div>
-                  <p>Name: {generalData.name}</p>
-                  <p>Country: {generalData.country}</p>
-                  <p>Region: {generalData.region}</p>
+                  <p>Name: {generalData.name || "N/A"}</p>
+                  <p>Country: {generalData.country || "N/A"}</p>
+                  <p>Region: {generalData.region || "N/A"}</p>
                   <p>
                     <a
-                      href={generalData.href}
+                      href={generalData.href || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -113,44 +142,27 @@ export default function Resort() {
                   </p>
                 </div>
               ) : (
-                <p>Loading general data...</p>
+                <p>Loading...</p>
               )}
             </div>
 
-            {/* Location Data */}
             <div className="grid-item">
               <h4>Location</h4>
               {location ? (
                 <div>
-                  <p>Latitude: {location.latitude}</p>
-                  <p>Longitude: {location.longitude}</p>
+                  <p>Latitude: {location.latitude || "N/A"}</p>
+                  <p>Longitude: {location.longitude || "N/A"}</p>
                 </div>
               ) : (
                 <p>Loading location data...</p>
               )}
             </div>
 
-            {/* Snow Base */}
             <div className="grid-item">
               <h4>Snow Base</h4>
-              {snowBase !== null ? (
-                <p>{snowBase} cm</p>
-              ) : (
-                <p>Loading snow base data...</p>
-              )}
-            </div>
-
-            {/* Lifts Data */}
-            <div className="grid-item">
-              <h4>Lifts</h4>
-              {lifts ? (
-                <div>
-                  <p>Status: {lifts.status}</p>
-                  <p>Stats: {lifts.stats}</p>
-                </div>
-              ) : (
-                <p>Loading lifts data...</p>
-              )}
+              <p>
+                {snowBase !== "N/A" ? `${snowBase} cm` : "Data not available"}
+              </p>
             </div>
           </div>
         </div>
