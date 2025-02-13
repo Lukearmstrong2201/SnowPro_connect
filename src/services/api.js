@@ -3,29 +3,43 @@ const BASE_URL = "https://ski-resorts-and-conditions.p.rapidapi.com/v1";
 
 // Fetch the list of resorts
 export const getResortsList = async () => {
-  const url = `${BASE_URL}/resort`;
-  const options = {
-    method: "GET",
-    headers: {
-      "x-rapidapi-key": API_KEY,
-      "x-rapidapi-host": "ski-resorts-and-conditions.p.rapidapi.com",
-    },
-  };
+  const resorts = [];
+  let currentPage = 1;
+  const pageSize = 25;
 
   try {
-    const response = await fetch(url, options);
+    while (true) {
+      const url = `${BASE_URL}/resort?page=${currentPage}&per_page=${pageSize}`;
+      const options = {
+        method: "GET",
+        headers: {
+          "x-rapidapi-key": API_KEY,
+          "x-rapidapi-host": "ski-resorts-and-conditions.p.rapidapi.com",
+        },
+      };
 
-    if (!response.ok) {
-      throw new Error(`API request failed with status: ${response.status}`);
+      const response = await fetch(url, options);
+
+      if (!response.ok) {
+        throw new Error(`API request failed with status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (!result.data || result.data.length === 0) {
+        break;
+      }
+
+      resorts.push(...result.data);
+
+      if (currentPage >= result.total_pages) {
+        break;
+      }
+
+      currentPage += 1;
     }
 
-    const result = await response.json();
-
-    if (!result.data) {
-      return [];
-    }
-
-    return result.data.map((resort) => ({
+    return resorts.map((resort) => ({
       id: resort.id || Math.random().toString(36).substr(2, 9), // Assign random ID if missing
       name: resort.name || "Unknown Resort",
       location: resort.location || "Location not available",

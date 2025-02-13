@@ -58,6 +58,7 @@ export default function Resort() {
     }
 
     setSelectedResort(fullResort);
+    setFilteredResorts([resortName]);
     setIsFetching(true);
 
     try {
@@ -76,7 +77,7 @@ export default function Resort() {
         setIsFetching(false);
         return;
       }
-
+      console.log("Conditions Object:", data.conditions);
       setGeneralData(data.data || {});
       setLocation(data.location || { latitude: "N/A", longitude: "N/A" });
       setSnowBase(data.conditions?.base ?? "N/A"); // Safe access with default value
@@ -95,9 +96,20 @@ export default function Resort() {
     setIsFetching(false);
   };
 
+  const findNearestResort = () => {
+    alert(
+      "Feature coming soon! We’ll use your location to find the best resorts nearby!"
+    );
+  };
+
   return (
     <div className="resorts-container">
-      <h2>Choose Your Resort</h2>
+      <div className="resorts-hero-section">
+        <h1>Choose Your Perfect Ski Resort</h1>
+        <p>
+          Search for the best ski resorts and book with top local instructors!
+        </p>
+      </div>
 
       <input
         type="text"
@@ -106,6 +118,13 @@ export default function Resort() {
         onChange={handleSearchChange}
         className="search-bar"
       />
+
+      <button
+        className="find-nearest-resort-button"
+        onClick={findNearestResort}
+      >
+        Find Nearest Resort
+      </button>
 
       <div className="resorts-list">
         {filteredResorts.length > 0 ? (
