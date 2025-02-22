@@ -6,6 +6,10 @@
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 0;
+  text-align: center;
+  background-color: #eb6009;
+  padding-top: 100px;
+  color: #fff;
 }
 
 .login-hero2 {
@@ -13,6 +17,7 @@
   font-weight: 700;
   color: white;
   margin: 0;
+  text-align: center;
 }
 
 .login-page-container {
@@ -25,13 +30,14 @@
 .login-section {
   background: #111111;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   padding: 40px;
-  width: 70%;
+  width: 100%;
+  max-width: 400px;
   position: relative;
   border-radius: 10px;
-  margin-top: 100px;
+  margin-top: 50px;
 }
 
 .signInTitle {
@@ -87,13 +93,13 @@ input {
 
 .checkbox-remember input {
   margin-right: 8px;
-  vertical-align: middle; /* Ensures checkbox is aligned with text */
+  vertical-align: middle;
 }
 
 .checkbox-remember label {
   font-size: 14px;
   margin: 0;
-  vertical-align: middle; /* Ensures label is aligned with the checkbox */
+  vertical-align: middle;
 }
 
 .login-button {
@@ -106,10 +112,14 @@ input {
   transition: background-color 0.3s;
   width: 30%;
   border-radius: 10px;
+  margin-top: 20px;
 }
 
 .login-button:hover {
   background-color: #144a7b;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+  transition: all 0.3s ease-in-out;
 }
 
 .lost-password {
@@ -122,4 +132,12 @@ input {
 
 .lost-password:hover {
   text-decoration: underline;
+}
+
+.login-section {
+  background: rgba(0, 0, 0, 0.7); /* Dark overlay for readability */
+  border-radius: 15px;
+  padding: 40px;
+  width: 100%;
+  max-width: 450px;
 }
