@@ -3,7 +3,7 @@
 # This will be the record of what is actually inside the database table
 
 from database import Base
-from sqlalchemy import Column, Integer, String, Date, DateTime
+from sqlalchemy import Column, Integer, String, Date
 
 class Users(Base):
     __tablename__ = 'users'
@@ -11,10 +11,9 @@ class Users(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     email = Column(String)
-    contact= Column(Integer)
+    contact= Column(String)
     date_of_birth = Column(Date)
     role = Column(String)
-    created_at = Column(DateTime)
 
 
 
