@@ -33,6 +33,7 @@ class Users(Base):
     contact = Column(String, nullable=False)  
     date_of_birth = Column(Date, nullable=False)
     address = Column(String, nullable=True)
+    language=Column(String, nullable=False)
     is_active = Column(Boolean)
 
     # One-to-one relationships

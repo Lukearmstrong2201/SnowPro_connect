@@ -1,13 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, Path
 from models import Users
 from database import SessionLocal
-from typing import Annotated
+from typing import Annotated, Literal
 from sqlalchemy.orm import Session
 from starlette import status
 from pydantic import BaseModel, Field, EmailStr, constr
 from datetime import date
 
-router = APIRouter()
+
+router = APIRouter(prefix="/users", tags=["Users"])
 
 def get_db():
     db = SessionLocal()     # Notes: Contacting the database
@@ -21,11 +22,14 @@ db_dependency = Annotated[Session, Depends(get_db)]     #Notes: Using dependency
 
 #USER REQUEST
 class UserRequest(BaseModel):
-    name: str = Field(min_length=3)
+    first_name: str = Field(min_length=3)
+    last_name: str = Field(min_length=2)
     email: EmailStr
     contact: str= Field(min_length=10, max_length=15) #Contact should be between 10 and 15 digits
+    address: str
+    language: str
     date_of_birth: date
-    role: str = Field(min_length=3, max_length=50)  # Role should be between 3 and 50 characters
+    role: Literal["student", "instructor"]
     
 @router.get("/", status_code=status.HTTP_200_OK)
 async def read_all(db: db_dependency ):    
@@ -54,21 +58,23 @@ async def update_user(db: db_dependency,user_request: UserRequest, user_id: int=
     
     user_request.contact = str(user_request.contact)
     
-    user_model.name = user_request.name 
+    user_model.first_name = user_request.first_name
+    user_model.last_name = user_request.last_name
     user_model.email = user_request.email
     user_model.contact = user_request.contact
     user_model.date_of_birth = user_request.date_of_birth
+    user_model.address = user_request.address
+    user_model.language = user_request.language
     user_model.role = user_request.role
 
-    db.add(user_model)
     db.commit()
 
 @router.delete("/user/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_user(db:db_dependency, user_id: int=Path(gt=0)):
+async def delete_user(db: db_dependency, user_id: int = Path(gt=0)):
     user_model = db.query(Users).filter(Users.id == user_id).first()
     if user_model is None:
-        raise HTTPException(status_code=404, detail='User not found.')
-    db.query(Users).filter(Users.id == user_id).delete()
+        raise HTTPException(status_code=404, detail="User not found.")
 
+    db.delete(user_model)
     db.commit()
 
