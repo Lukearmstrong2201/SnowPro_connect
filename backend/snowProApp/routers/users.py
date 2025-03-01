@@ -4,7 +4,7 @@ from database import SessionLocal
 from typing import Annotated
 from sqlalchemy.orm import Session
 from starlette import status
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field, EmailStr, constr
 from datetime import date
 
 router = APIRouter()
@@ -32,7 +32,7 @@ async def read_all(db: db_dependency ):
     return db.query(Users).all()
 
 @router.get("/user/{user_id}", status_code=status.HTTP_200_OK)
-async def read_user(db: db_dependency, user_id: int = Path(gt=0)):    # Path perameter is validation, ensuring id > 0
+async def read_user(db: db_dependency, user_id: int = Path(gt=0)):    # Path parameter is validation, ensuring id > 0
     user_model = db.query(Users).filter(Users.id == user_id).first()    #Notes: first() ensures a match is returned as soon as user_id is found
     if user_model is not None:
         return user_model
