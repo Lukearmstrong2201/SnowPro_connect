@@ -40,7 +40,7 @@ def get_db():
 db_dependency = Annotated[Session, Depends(get_db)] 
     
     
-@router.post("/auth/register", status_code=status.HTTP_201_CREATED)
+@router.post("/register", status_code=status.HTTP_201_CREATED)
 async def create_user(db: db_dependency, create_user_request: CreateUserRequest):
     existing_user = db.query(Users).filter(Users.email == create_user_request.email).first()
     if existing_user:

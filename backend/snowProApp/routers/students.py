@@ -12,7 +12,7 @@ def get_db():
     finally:
         db.close()
 
-@router.get("/students/{student_id}", status_code=200)
+@router.get("/{student_id}", status_code=200)
 async def get_student(student_id: int, db: Session = Depends(get_db)):
     student = db.query(Students).filter(Students.user_id == student_id).first()
     if not student:

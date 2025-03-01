@@ -35,7 +35,7 @@ class UserRequest(BaseModel):
 async def read_all(db: db_dependency ):    
     return db.query(Users).all()
 
-@router.get("/user/{user_id}", status_code=status.HTTP_200_OK)
+@router.get("/{user_id}", status_code=status.HTTP_200_OK)
 async def read_user(db: db_dependency, user_id: int = Path(gt=0)):    # Path parameter is validation, ensuring id > 0
     user_model = db.query(Users).filter(Users.id == user_id).first()    #Notes: first() ensures a match is returned as soon as user_id is found
     if user_model is not None:
@@ -50,7 +50,7 @@ async def create_user(db: db_dependency, user_request: UserRequest):
     db.add(user_model)  # Get the database ready
     db.commit() # flush and commit transaction to database
     
-@router.put("/user/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.put("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def update_user(db: db_dependency,user_request: UserRequest, user_id: int=Path(gt=0)):
     user_model = db.query(Users).filter(Users.id == user_id).first()
     if user_model is None:
@@ -69,7 +69,7 @@ async def update_user(db: db_dependency,user_request: UserRequest, user_id: int=
 
     db.commit()
 
-@router.delete("/user/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(db: db_dependency, user_id: int = Path(gt=0)):
     user_model = db.query(Users).filter(Users.id == user_id).first()
     if user_model is None:
