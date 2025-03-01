@@ -8,23 +8,19 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("student");
-
-  // Instructor-specific fields
-  const [instructorName, setInstructorName] = useState("");
-  const [instructorContact, setInstructorContact] = useState("");
-  const [certificateBody, setCertificateBody] = useState("");
-  const [qualificationLevel, setQualificationLevel] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [contact, setContact] = useState("");
   const [address, setAddress] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
-  const [experience, setExperience] = useState("");
   const [language, setLanguage] = useState("");
 
+  // Instructor-specific fields
+  const [experience, setExperience] = useState("");
+  const [certificateBody, setCertificateBody] = useState("");
+  const [qualificationLevel, setQualificationLevel] = useState("");
+
   // Student-specific fields
-  const [studentName, setStudentName] = useState("");
-  const [studentDob, setStudentDob] = useState("");
-  const [studentAddress, setStudentAddress] = useState("");
-  const [studentLanguage, setStudentLanguage] = useState("");
-  const [studentContact, setStudentContact] = useState("");
 
   const navigate = useNavigate();
 
@@ -32,31 +28,25 @@ export default function Register() {
     e.preventDefault();
 
     const registrationData = {
+      firstName,
+      lastName,
       email,
       password,
       role,
+      contact,
+      address,
+      dateOfBirth,
+      language,
       ...(role === "instructor" && {
-        name: instructorName,
-        contactNumber: instructorContact,
         certificateBody,
         qualificationLevel,
-        address,
-        dateOfBirth,
         experience,
-        language,
-      }),
-      ...(role === "student" && {
-        name: studentName,
-        dob: studentDob,
-        address: studentAddress,
-        language: studentLanguage,
-        contactNumber: studentContact,
       }),
     };
 
     console.log("Registering:", registrationData);
+    // TODO: Implement API request for registration
 
-    // Handle API registration logic (TO COMPLETE)
     navigate("/dashboard");
   };
 
@@ -67,59 +57,66 @@ export default function Register() {
         <p className="form-description">
           Register as a Student or Instructor to access the platform
         </p>
+
         <form onSubmit={handleRegister}>
+          {/* Common Fields (Shown for Both Students & Instructors) */}
           <InputField
-            id="email"
-            label="Email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            id="firstName"
+            label="First Name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
             required
-            placeholder="Enter your email"
+            placeholder="Enter your first name"
           />
 
           <InputField
-            id="password"
-            label="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            id="lastName"
+            label="Last Name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
             required
-            placeholder="Enter your password"
+            placeholder="Enter your last name"
           />
 
-          <SelectField
-            id="role"
-            label="Select your role"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            options={[
-              { value: "student", label: "Student" },
-              { value: "instructor", label: "Instructor" },
-            ]}
+          <InputField
+            id="dateOfBirth"
+            label="Date of Birth"
+            type="date"
+            value={dateOfBirth}
+            onChange={(e) => setDateOfBirth(e.target.value)}
+            required
+          />
+
+          <InputField
+            id="address"
+            label="Address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            required
+            placeholder="Enter your address"
+          />
+
+          <InputField
+            id="contact"
+            label="Contact Number"
+            value={contact}
+            onChange={(e) => setContact(e.target.value)}
+            required
+            placeholder="Enter your contact number"
+          />
+
+          <InputField
+            id="language"
+            label="Language(s)"
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            required
+            placeholder="Enter your preferred language(s)"
           />
 
           {/* Instructor-specific fields */}
           {role === "instructor" && (
             <>
-              <InputField
-                id="instructorName"
-                label="Full Name"
-                value={instructorName}
-                onChange={(e) => setInstructorName(e.target.value)}
-                required
-                placeholder="Enter your full name"
-              />
-
-              <InputField
-                id="instructorContact"
-                label="Contact Number"
-                value={instructorContact}
-                onChange={(e) => setInstructorContact(e.target.value)}
-                required
-                placeholder="Enter your contact number"
-              />
-
               <SelectField
                 id="certificateBody"
                 label="Certificate Body"
@@ -149,24 +146,6 @@ export default function Register() {
               />
 
               <InputField
-                id="address"
-                label="Address"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                required
-                placeholder="Enter your address"
-              />
-
-              <InputField
-                id="dateOfBirth"
-                label="Date of Birth"
-                type="date"
-                value={dateOfBirth}
-                onChange={(e) => setDateOfBirth(e.target.value)}
-                required
-              />
-
-              <InputField
                 id="experience"
                 label="Years of Experience"
                 type="number"
@@ -175,67 +154,39 @@ export default function Register() {
                 required
                 placeholder="Enter years of experience"
               />
-
-              <InputField
-                id="language"
-                label="Language(s)"
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-                required
-                placeholder="Languages spoken"
-              />
             </>
           )}
 
-          {/* Student-specific fields */}
-          {role === "student" && (
-            <>
-              <InputField
-                id="studentName"
-                label="Name"
-                value={studentName}
-                onChange={(e) => setStudentName(e.target.value)}
-                required
-                placeholder="Enter your full name"
-              />
+          <SelectField
+            id="role"
+            label="Select Your Role"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            options={[
+              { value: "student", label: "Student" },
+              { value: "instructor", label: "Instructor" },
+            ]}
+          />
 
-              <InputField
-                id="studentDob"
-                label="Date of Birth"
-                type="date"
-                value={studentDob}
-                onChange={(e) => setStudentDob(e.target.value)}
-                required
-              />
+          <InputField
+            id="email"
+            label="Email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            placeholder="Enter your email"
+          />
 
-              <InputField
-                id="studentAddress"
-                label="Address"
-                value={studentAddress}
-                onChange={(e) => setStudentAddress(e.target.value)}
-                required
-                placeholder="Enter your address"
-              />
-
-              <InputField
-                id="studentLanguage"
-                label="Preferred Language(s)"
-                value={studentLanguage}
-                onChange={(e) => setStudentLanguage(e.target.value)}
-                required
-                placeholder="Enter preferred language(s)"
-              />
-
-              <InputField
-                id="studentContact"
-                label="Contact Number"
-                value={studentContact}
-                onChange={(e) => setStudentContact(e.target.value)}
-                required
-                placeholder="Enter your contact number"
-              />
-            </>
-          )}
+          <InputField
+            id="password"
+            label="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            placeholder="Enter your password"
+          />
 
           <button type="submit" className="register-btn">
             Register
