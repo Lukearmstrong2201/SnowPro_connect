@@ -88,13 +88,7 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
     return {"message": "User created successfully", "user_id": user.id}
 
 @router.post("/token")
-async def login_for_access_token(
-    form_data: OAuth2PasswordRequestForm = Depends(),  # ✅ Correct usage of OAuth2PasswordRequestForm
-    db: Session = Depends(get_db)  # ✅ Ensure dependency injection is correct
-):
-    # Example authentication logic
-    if form_data.username != "testuser" or form_data.password != "password":
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db:db_dependency):
+    return 'token'
 
-    return {"access_token": "dummy_token", "token_type": "bearer"}
 
