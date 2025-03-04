@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Form
 from pydantic import BaseModel, EmailStr
 from models import Users, Students, Instructors, CertificationBodyEnum, QualificationLevelEnum
 from passlib.context import CryptContext
@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from typing import Annotated, Literal
 from starlette import status
 from datetime import date
+from fastapi.security import OAuth2PasswordRequestForm
 
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
@@ -85,4 +86,15 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
     db.commit()
     
     return {"message": "User created successfully", "user_id": user.id}
+
+@router.post("/token")
+async def login_for_access_token(
+    form_data: OAuth2PasswordRequestForm = Depends(),  # ✅ Correct usage of OAuth2PasswordRequestForm
+    db: Session = Depends(get_db)  # ✅ Ensure dependency injection is correct
+):
+    # Example authentication logic
+    if form_data.username != "testuser" or form_data.password != "password":
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    return {"access_token": "dummy_token", "token_type": "bearer"}
 

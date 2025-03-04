@@ -19,7 +19,7 @@ async def get_instructor(instructor_id: int, db: Session = Depends(get_db)):
     if not instructor:
         raise HTTPException(status_code=404, detail="Instructor not found")
 
-    # ✅ Fetch the associated user for name details
+    # Fetch the associated user for name details
     user = db.query(Users).filter(Users.id == instructor.user_id).first()
 
     return {
