@@ -6,11 +6,15 @@ from database import SessionLocal
 from sqlalchemy.orm import Session
 from typing import Annotated, Literal
 from starlette import status
-from datetime import date
+from datetime import date, timedelta, datetime, timezone
 from fastapi.security import OAuth2PasswordRequestForm
+from jose import jwt
 
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
+
+SECRET_KEY = 'df458d5c559d12ca06ddfd80540cf6b23599ad42e8a1f5fedf1202cbd25491fb'
+ALGORITHM = 'HS256'
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
@@ -30,6 +34,10 @@ class CreateUserRequest(BaseModel):
     years_of_experience: int = None
     languages: str = None
 
+class Token(BaseModel): 
+    access_token: str
+    token_type: str
+
 def get_db():
     db = SessionLocal()     
     try: 
@@ -48,6 +56,14 @@ def authenticate_user(email: EmailStr, password: str, db):
     if not bcrypt_context.verify(password, user.hashed_password):
         return False
     return user
+
+def create_access_token(email: EmailStr, user_id: int, expires_delta: timedelta):
+
+    encode = {'sub': email, 'id': user_id}
+    expires = datetime.now(timezone.utc) + expires_delta
+    encode.update({'exp': expires})
+    return jwt.encode(encode, SECRET_KEY, algorithm = ALGORITHM)
+
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 async def create_user(db: db_dependency, create_user_request: CreateUserRequest):
@@ -95,11 +111,12 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
     
     return {"message": "User created successfully", "user_id": user.id}
 
-@router.post("/token")
+@router.post("/token", response_model=Token)
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db:db_dependency):
     user = authenticate_user(form_data.username, form_data.password, db)
     if not user:
         return 'Failed Authentication'
-    return {"message": "Successful Authentication", "user_id": user.id}
+    token = create_access_token(user.email, user.id, timedelta(minutes=20))
+    return {'access_token': token, 'token_type': 'bearer'}
 
 
