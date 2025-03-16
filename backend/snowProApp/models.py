@@ -4,7 +4,7 @@
 
 from database import Base
 from sqlalchemy import Column, Integer, String, Date, ForeignKey, Enum, Boolean
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, validates
 import enum
 
 #Enum for certification bodies (CASI, CSIA, NZSIA, BASI)
@@ -40,13 +40,14 @@ class Users(Base):
     student = relationship("Students", back_populates="user", uselist=False)
     instructor = relationship("Instructors", back_populates="user", uselist=False)
 
+
+
 class Students(Base):
     __tablename__ = "students"
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), unique=True)  # Link to Users table
-    language = Column(String, nullable=False)  
-
+    
     user = relationship("Users", back_populates="student")
 
 class Instructors(Base):
@@ -57,8 +58,7 @@ class Instructors(Base):
     certificate_body = Column(Enum(CertificationBodyEnum), nullable=False)  
     level_of_qualification = Column(Enum(QualificationLevelEnum), nullable=False)  
     years_of_experience = Column(Integer, nullable=False) 
-    languages = Column(String, nullable=False) 
-
+    
     user = relationship("Users", back_populates="instructor")
 
 

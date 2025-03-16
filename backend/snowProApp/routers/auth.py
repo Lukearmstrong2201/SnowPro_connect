@@ -7,8 +7,8 @@ from sqlalchemy.orm import Session
 from typing import Annotated, Literal
 from starlette import status
 from datetime import date, timedelta, datetime, timezone
-from fastapi.security import OAuth2PasswordRequestForm
-from jose import jwt
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
+from jose import jwt, JWTError
 
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
@@ -17,6 +17,7 @@ SECRET_KEY = 'df458d5c559d12ca06ddfd80540cf6b23599ad42e8a1f5fedf1202cbd25491fb'
 ALGORITHM = 'HS256'
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
+oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")
 
 class CreateUserRequest(BaseModel):
    
@@ -63,6 +64,22 @@ def create_access_token(email: EmailStr, user_id: int, expires_delta: timedelta)
     expires = datetime.now(timezone.utc) + expires_delta
     encode.update({'exp': expires})
     return jwt.encode(encode, SECRET_KEY, algorithm = ALGORITHM)
+
+def get_current_user(token: str = Depends(oauth2_bearer), db: Session = Depends(get_db)):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id: int = payload.get("id")
+        if user_id is None:
+            raise HTTPException(status_code=401, detail="Invalid authentication token")
+
+        user = db.query(Users).filter(Users.id == user_id).first()
+        if user is None or not user.is_active:
+            raise HTTPException(status_code=401, detail="User not found or inactive")
+
+        return user
+
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Could not validate token")
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
@@ -118,5 +135,3 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
         return 'Failed Authentication'
     token = create_access_token(user.email, user.id, timedelta(minutes=20))
     return {'access_token': token, 'token_type': 'bearer'}
-
-
