@@ -24,7 +24,7 @@ user_dependency = Annotated[Users, Depends(get_current_user)]
 
 #GET THE LOGGED IN STUDENTS PROFILE (NEEDS DEBUGGING)
 @router.get("/me", response_model=StudentResponse, status_code=200)
-async def get_student_profile(db: Session = db_dependency, user: Users = user_dependency):
+async def get_student_profile(db: db_dependency, user: user_dependency):
    
     student = db.query(Students).join(Users).filter(Students.user_id == user.id).first()
 
