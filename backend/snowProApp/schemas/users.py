@@ -1,19 +1,32 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, Field
 from datetime import date
-from typing import Optional
+from typing import Literal
 
-
-class UserBase(BaseModel):
+class UserResponse(BaseModel):
     id: int
-    email: str
     first_name: str
     last_name: str
+    email: EmailStr
     contact: str
-    address: Optional[str] = None
+    address: str
     language: str
     date_of_birth: date
-    role: str
+    role: Literal["student", "instructor", "admin"]
     is_active: bool
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
+class UserRequest(BaseModel):
+    first_name: str
+    last_name: str
+    email: EmailStr
+    password: str
+    contact: str
+    address: str
+    language: str
+    date_of_birth: date
+    role: Literal["student", "instructor", "admin"]
+
+    class Config:
+        from_attributes = True

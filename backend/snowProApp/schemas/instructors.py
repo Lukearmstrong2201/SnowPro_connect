@@ -1,6 +1,7 @@
 from pydantic import BaseModel
-from .users import UserBase  
+from schemas.users import UserResponse 
 from enum import Enum
+from datetime import date
 
 
 class CertificationBodyEnum(str, Enum):
@@ -17,21 +18,17 @@ class QualificationLevelEnum(int, Enum):
     Level4 = 4
 
 
-class InstructorResponse(UserBase):
+class InstructorResponse(UserResponse):    
     certificate_body: CertificationBodyEnum
     level_of_qualification: QualificationLevelEnum
     years_of_experience: int
-    languages: str
-
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class InstructorCreateUpdate(BaseModel):
     certificate_body: CertificationBodyEnum
     level_of_qualification: QualificationLevelEnum
     years_of_experience: int
-    languages: str
-
     class Config:
-        orm_mode = True
+        from_attributes = True
