@@ -1,5 +1,6 @@
 "use client";
 
+import Wave from "../components/Wave";
 import instructorWalk from "../assets/instructor-walk.jpg";
 import bookLesson from "../assets/book-with-ease.png";
 import stayconnected from "../assets/stay-connected.jpg";
@@ -39,6 +40,7 @@ export default function About() {
         >
           About Our App
         </motion.h1>
+        <p> </p>
 
         {sections.map((section, i) => (
           <motion.section
@@ -73,16 +75,7 @@ export default function About() {
       </main>
 
       <div className="wave-footer">
-        <svg
-          viewBox="0 0 1440 320"
-          preserveAspectRatio="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fill="white"
-            d="M0,240 C480,100 960,380 1440,240 L1440,320 L0,320 Z"
-          />
-        </svg>
+        <Wave></Wave>
         <div className="wave-fill" />
       </div>
     </>
