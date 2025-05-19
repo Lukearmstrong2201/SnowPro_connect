@@ -20,6 +20,15 @@ body {
   border-radius: 12px;
 }
 
+.about-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: left;
+}
+
 .about-hero-bg {
   position: absolute;
   top: 0;
@@ -47,26 +56,17 @@ body {
 }
 
 .about-title {
-  position: relative;
-  z-index: 2;
-  text-align: center;
   font-size: 3.8rem;
   color: white;
-  margin: 0;
+  margin: 0 0 1rem 0;
   padding-top: 4rem;
 }
 
 .about-subtitle {
-  text-align: left;
-  font-size: 1.2rem;
-  font-weight: 400;
-  line-height: 1.8;
+  font-size: 1.5rem;
   color: #ffffffcc;
-  margin: 1rem auto 2rem;
+  line-height: 1.8;
   max-width: 800px;
-  padding: 0 1rem;
-  z-index: 2;
-  position: relative;
 }
 
 .about-section {

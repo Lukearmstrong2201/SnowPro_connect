@@ -40,21 +40,23 @@ export default function About() {
           className="about-hero-bg"
         />
 
-        <motion.h1
-          className="about-title"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          We’re here to connect and inspire.
-        </motion.h1>
+        <div className="about-hero-content">
+          <motion.h1
+            className="about-title"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            We’re here to connect and inspire.
+          </motion.h1>
 
-        <p className="about-subtitle">
-          Whether you're strapping in for the first time or looking to take your
-          skills to the next level, we’re here to help you connect with
-          experienced instructors who know your mountain best. SnowPro Connect
-          makes it easy to discover, book, and ride — all from your phone.
-        </p>
+          <p className="about-subtitle">
+            Whether you're strapping in for the first time or looking to take
+            your skills to the next level, we’re here to help you connect with
+            experienced instructors who know your mountain best. SnowPro Connect
+            makes it easy to discover, book, and ride — all from your phone.
+          </p>
+        </div>
       </div>
       <main className="about-container">
         {sections.map((section, i) => (
