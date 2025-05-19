@@ -4,6 +4,7 @@ import Wave from "../components/Wave";
 import instructorWalk from "../assets/instructor-walk.jpg";
 import bookLesson from "../assets/book-with-ease.png";
 import stayconnected from "../assets/stay-connected.jpg";
+import instructor from "../assets/carving.jpg";
 import { motion } from "framer-motion";
 import "../styles/About.css";
 
@@ -31,17 +32,31 @@ export default function About() {
 
   return (
     <>
-      <main className="about-container">
+      <div className="about-hero">
+        <div className="about-hero-overlay" />
+        <img
+          src={instructor}
+          alt="Snowboard instructor carving"
+          className="about-hero-bg"
+        />
+
         <motion.h1
           className="about-title"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          About Our App
+          We’re here to connect and inspire.
         </motion.h1>
-        <p> </p>
 
+        <p className="about-subtitle">
+          Whether you're strapping in for the first time or looking to take your
+          skills to the next level, we’re here to help you connect with
+          experienced instructors who know your mountain best. SnowPro Connect
+          makes it easy to discover, book, and ride — all from your phone.
+        </p>
+      </div>
+      <main className="about-container">
         {sections.map((section, i) => (
           <motion.section
             className={`about-section ${section.reverse ? "reverse" : ""}`}

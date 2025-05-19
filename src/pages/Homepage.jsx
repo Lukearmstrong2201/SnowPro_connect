@@ -9,10 +9,12 @@ export default function Homepage() {
     <div className="homepage">
       <section className="hero-section">
         <div className="hero-content">
-          <h1>Welcome to SnowPro Connect</h1>
+          <h1>A life experience that lasts a lifetime</h1>
           <p>
-            Book lessons with top ski and snowboard instructors at your favorite
-            resorts.
+            No queues. No waiting. <strong>Just ride!</strong>
+          </p>
+          <p>
+            Book ski and snowboard lessons in seconds — right from your device.
           </p>
           <button className="cta-button">Get Started</button>
         </div>
@@ -22,7 +24,7 @@ export default function Homepage() {
         <div className="objectives-container">
           <div className="objective-box vision-container">
             <div className="content-wrapper">
-              <h3>Our Vision</h3>
+              <h3>Vision</h3>
               <img src={visionImg} alt="Vision" />
               <div className="text-container">
                 <p>
@@ -39,7 +41,7 @@ export default function Homepage() {
 
           <div className="objective-box mission-container">
             <div className="content-wrapper">
-              <h3> Our Mission</h3>
+              <h3>Mission</h3>
               <img src={missionImg} alt="Mission" />
               <div className="text-container">
                 <p>
