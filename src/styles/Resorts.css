@@ -197,6 +197,19 @@ h2 {
   }
 }
 
+@media (min-width: 1024px) {
+  .grid-container {
+    grid-template-columns: repeat(3, minmax(200px, auto));
+    grid-auto-flow: dense;
+    grid-auto-rows: auto;
+    gap: 20px;
+  }
+
+  .grid-item:nth-child(4) {
+    grid-column: span 2;
+  }
+}
+
 .snowfall {
   position: fixed;
   top: 0;

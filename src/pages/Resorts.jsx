@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../styles/Resorts.css";
 import { getResortsList, getSkiResortData } from "../services/api";
+import { fetchWeatherForecast } from "../services/weatherService";
 
 export default function Resort() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -13,6 +14,7 @@ export default function Resort() {
   const [lifts, setLifts] = useState(null);
   const [generalData, setGeneralData] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
+  const [weatherForecast, setWeatherForecast] = useState([]);
 
   // Fetch resorts list when the component mounts
   useEffect(() => {
@@ -85,6 +87,12 @@ export default function Resort() {
         status: data.lifts?.status ?? {},
         stats: data.lifts?.stats ?? {},
       });
+
+      const weatherData = await fetchWeatherForecast(
+        data.location.latitude,
+        data.location.longitude
+      );
+      console.log("5-day forecast:", weatherData);
     } catch (error) {
       console.error("Error fetching resort details:", error);
       setGeneralData(null);

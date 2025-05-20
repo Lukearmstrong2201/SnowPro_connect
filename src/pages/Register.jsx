@@ -24,30 +24,47 @@ export default function Register() {
 
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
 
     const registrationData = {
-      firstName,
-      lastName,
+      first_name: firstName,
+      last_name: lastName,
       email,
       password,
       role,
       contact,
       address,
-      dateOfBirth,
+      date_of_birth: dateOfBirth,
       language,
       ...(role === "instructor" && {
-        certificateBody,
-        qualificationLevel,
-        experience,
+        certificate_body: certificateBody,
+        level_of_qualification: parseInt(qualificationLevel, 10),
+        years_of_experience: parseInt(experience, 10),
+        languages: language,
       }),
     };
 
-    console.log("Registering:", registrationData);
-    // TODO: Implement API request for registration
+    try {
+      const response = await fetch("http://localhost:8000/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(registrationData),
+      });
 
-    navigate("/dashboard");
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.detail || "Registration failed");
+      }
+
+      alert("Registration successful!");
+      // Optionally: redirect to login or home
+      navigate("/login");
+    } catch (error) {
+      alert(error.message || "Error during registration.");
+      console.error(error);
+    }
   };
 
   return (
