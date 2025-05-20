@@ -27,13 +27,12 @@ class CreateUserRequest(BaseModel):
     password: str
     role: Literal["student", "instructor"]
     contact: str
-    date_of_birth: date #(Must be a string in YYYY-MM-DD format)
+    date_of_birth: date
     address: str
     language: str
     certificate_body: CertificationBodyEnum = None
     level_of_qualification: QualificationLevelEnum = None
     years_of_experience: int = None
-    languages: str = None
 
 class Token(BaseModel): 
     access_token: str
@@ -114,13 +113,12 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
     elif create_user_request.role == "instructor":
         if not (create_user_request.certificate_body and create_user_request.level_of_qualification and create_user_request.years_of_experience):
             raise HTTPException(status_code=400, detail="All instructor fields are required")
-        
+        print("Creating instructor with:", create_user_request.model_dump())
         instructor = Instructors(
             user_id = user.id,
             certificate_body=create_user_request.certificate_body,
             level_of_qualification=create_user_request.level_of_qualification,
-            years_of_experience=create_user_request.years_of_experience,
-            languages=create_user_request.languages
+            years_of_experience=create_user_request.years_of_experience
         )
         db.add(instructor)
 
@@ -128,10 +126,26 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
     
     return {"message": "User created successfully", "user_id": user.id}
 
-@router.post("/token", response_model=Token)
-async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db:db_dependency):
+@router.post("/token")
+async def login_for_access_token(
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    db: db_dependency
+):
     user = authenticate_user(form_data.username, form_data.password, db)
     if not user:
-        return 'Failed Authentication'
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
     token = create_access_token(user.email, user.id, timedelta(minutes=20))
-    return {'access_token': token, 'token_type': 'bearer'}
+
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "user": {
+            "id": user.id,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+            "role": user.role,
+            "is_active": user.is_active
+        }
+    }
