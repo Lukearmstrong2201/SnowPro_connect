@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../styles/Resorts.css";
 import { getResortsList, getSkiResortData } from "../services/api";
 import { fetchWeatherForecast } from "../services/weatherService";
+import WeatherForecast from "../components/WeatherForecast";
 
 export default function Resort() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -13,8 +14,8 @@ export default function Resort() {
   const [location, setLocation] = useState(null);
   const [lifts, setLifts] = useState(null);
   const [generalData, setGeneralData] = useState(null);
-  const [isFetching, setIsFetching] = useState(false);
   const [weatherForecast, setWeatherForecast] = useState([]);
+  const [isFetching, setIsFetching] = useState(false);
 
   // Fetch resorts list when the component mounts
   useEffect(() => {
@@ -88,11 +89,12 @@ export default function Resort() {
         stats: data.lifts?.stats ?? {},
       });
 
-      const weatherData = await fetchWeatherForecast(
+      const rawWeatherData = await fetchWeatherForecast(
         data.location.latitude,
         data.location.longitude
       );
-      console.log("5-day forecast:", weatherData);
+      console.log("Full forecast object:", rawWeatherData);
+      setWeatherForecast(rawWeatherData.list || []);
     } catch (error) {
       console.error("Error fetching resort details:", error);
       setGeneralData(null);
@@ -151,98 +153,104 @@ export default function Resort() {
       </div>
 
       {selectedResort && (
-        <div className="resort-dashboard">
-          <h3>{selectedResort.name} - Resort Information</h3>
+        <>
+          <div className="resort-dashboard">
+            <h3>{selectedResort.name} - Resort Information</h3>
 
-          <div className="grid-container">
-            <div className="grid-item">
-              <h4>General Data</h4>
-              {generalData ? (
-                <div>
-                  <p>Name: {generalData.name || "N/A"}</p>
-                  <p>Country: {generalData.country || "N/A"}</p>
-                  <p>Region: {generalData.region || "N/A"}</p>
-                  <p>
-                    <a
-                      href={generalData.href || "#"}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Resort Website
-                    </a>
-                  </p>
-                </div>
-              ) : (
-                <p>Loading...</p>
-              )}
-            </div>
+            <div className="grid-container">
+              <div className="grid-item">
+                <h4>General Data</h4>
+                {generalData ? (
+                  <div>
+                    <p>Name: {generalData.name || "N/A"}</p>
+                    <p>Country: {generalData.country || "N/A"}</p>
+                    <p>Region: {generalData.region || "N/A"}</p>
+                    <p>
+                      <a
+                        href={generalData.href || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Resort Website
+                      </a>
+                    </p>
+                  </div>
+                ) : (
+                  <p>Loading...</p>
+                )}
+              </div>
 
-            <div className="grid-item">
-              <h4>Location</h4>
-              {location ? (
-                <div>
-                  <p>Latitude: {location.latitude || "N/A"}</p>
-                  <p>Longitude: {location.longitude || "N/A"}</p>
-                </div>
-              ) : (
-                <p>Loading location data...</p>
-              )}
-            </div>
+              <div className="grid-item">
+                <h4>Location</h4>
+                {location ? (
+                  <div>
+                    <p>Latitude: {location.latitude || "N/A"}</p>
+                    <p>Longitude: {location.longitude || "N/A"}</p>
+                  </div>
+                ) : (
+                  <p>Loading location data...</p>
+                )}
+              </div>
 
-            <div className="grid-item">
-              <h4>Snow Base</h4>
-              <p>
-                {snowBase !== "N/A" ? `${snowBase} cm` : "Data not available"}
-              </p>
-            </div>
-            <div className="grid-item">
-              <h4>Lift Status</h4>
-              {lifts?.status && Object.keys(lifts.status).length > 0 ? (
-                <div className="lift-status-container">
-                  {Object.entries(lifts.status).map(
-                    ([liftName, liftStatus]) => (
-                      <div key={liftName} className="lift-status-item">
-                        <span
-                          className={`status-circle ${
-                            liftStatus.toLowerCase() === "open"
-                              ? "open"
-                              : "closed"
-                          }`}
-                        ></span>
-                        <strong>{liftName}</strong>
-                      </div>
-                    )
-                  )}
-                </div>
-              ) : (
-                <p>No lift status data available.</p>
-              )}
-            </div>
+              <div className="grid-item">
+                <h4>Snow Base</h4>
+                <p>
+                  {snowBase !== "N/A" ? `${snowBase} cm` : "Data not available"}
+                </p>
+              </div>
+              <div className="grid-item">
+                <h4>Lift Status</h4>
+                {lifts?.status && Object.keys(lifts.status).length > 0 ? (
+                  <div className="lift-status-container">
+                    {Object.entries(lifts.status).map(
+                      ([liftName, liftStatus]) => (
+                        <div key={liftName} className="lift-status-item">
+                          <span
+                            className={`status-circle ${
+                              liftStatus.toLowerCase() === "open"
+                                ? "open"
+                                : "closed"
+                            }`}
+                          ></span>
+                          <strong>{liftName}</strong>
+                        </div>
+                      )
+                    )}
+                  </div>
+                ) : (
+                  <p>No lift status data available.</p>
+                )}
+              </div>
 
-            {/* Lift Statistics */}
-            <div className="grid-item">
-              <h4>Lift Statistics</h4>
-              {lifts?.stats ? (
-                <div>
-                  <p>
-                    <strong>Open:</strong> {lifts.stats.open ?? "N/A"}
-                  </p>
-                  <p>
-                    <strong>On Hold:</strong> {lifts.stats.hold ?? "N/A"}
-                  </p>
-                  <p>
-                    <strong>Scheduled:</strong> {lifts.stats.scheduled ?? "N/A"}
-                  </p>
-                  <p>
-                    <strong>Closed:</strong> {lifts.stats.closed ?? "N/A"}
-                  </p>
-                </div>
-              ) : (
-                <p>No lift statistics available.</p>
-              )}
+              {/* Lift Statistics */}
+              <div className="grid-item">
+                <h4>Lift Statistics</h4>
+                {lifts?.stats ? (
+                  <div>
+                    <p>
+                      <strong>Open:</strong> {lifts.stats.open ?? "N/A"}
+                    </p>
+                    <p>
+                      <strong>On Hold:</strong> {lifts.stats.hold ?? "N/A"}
+                    </p>
+                    <p>
+                      <strong>Scheduled:</strong>{" "}
+                      {lifts.stats.scheduled ?? "N/A"}
+                    </p>
+                    <p>
+                      <strong>Closed:</strong> {lifts.stats.closed ?? "N/A"}
+                    </p>
+                  </div>
+                ) : (
+                  <p>No lift statistics available.</p>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+          {Array.isArray(weatherForecast) && weatherForecast.length > 0 && (
+            <WeatherForecast forecastData={weatherForecast} />
+          )}
+        </>
       )}
     </div>
   );

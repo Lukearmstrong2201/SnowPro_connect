@@ -35,6 +35,7 @@ class Users(Base):
     address = Column(String, nullable=True)
     language=Column(String, nullable=False)
     is_active = Column(Boolean)
+    profile_picture = Column(String, nullable=True) # Path or URL to profile image
 
     # One-to-one relationships
     student = relationship("Students", back_populates="user", uselist=False)

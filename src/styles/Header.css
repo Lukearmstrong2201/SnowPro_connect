@@ -60,11 +60,6 @@
   transform: scale(1.05);
 }
 
-.sign-in-buttons {
-  display: flex;
-  gap: 5px;
-}
-
 .sign-in-button,
 .register-button {
   background-color: #eb6009;
@@ -84,6 +79,27 @@
   transform: scale(1.05);
 }
 
+.header-profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #eb6009;
+  margin-left: 15px;
+  cursor: pointer;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-profile-pic:hover {
+  transform: scale(1.05);
+  border-color: #f0a500;
+}
+
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
@@ -96,7 +112,9 @@
     gap: 10px;
   }
 
-  .sign-in-buttons {
+  .header-actions {
     margin-top: 10px;
+    flex-direction: column;
+    gap: 10px;
   }
 }

@@ -1,12 +1,14 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "../styles/Header.css";
 import Logo from "./Logo";
+import defaultProfile from "../assets/profile.png";
 
 export default function Header() {
   const navigate = useNavigate();
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout } = useAuth();
 
   const handleLoginClick = () => navigate("/login");
   const handleRegisterClick = () => navigate("/register");
@@ -14,6 +16,8 @@ export default function Header() {
     logout();
     navigate("/");
   };
+
+  console.log("Header user:", user);
 
   return (
     <header className="header">
@@ -51,7 +55,8 @@ export default function Header() {
             )}
           </ul>
         </nav>
-        <div className="sign-in-buttons">
+
+        <div className="header-actions">
           {!user ? (
             <>
               <button className="sign-in-button" onClick={handleLoginClick}>
@@ -62,9 +67,24 @@ export default function Header() {
               </button>
             </>
           ) : (
-            <button className="sign-in-button" onClick={handleLogoutClick}>
-              Logout
-            </button>
+            <>
+              <button className="sign-in-button" onClick={handleLogoutClick}>
+                Logout
+              </button>
+              {user && (
+                <img
+                  src={
+                    user.profile_picture?.startsWith("/static")
+                      ? `http://localhost:8000${user.profile_picture}`
+                      : user.profile_picture || defaultProfile
+                  }
+                  alt="Profile"
+                  className="header-profile-pic"
+                  onClick={() => navigate("/edit-profile")}
+                  title="Edit Profile"
+                />
+              )}
+            </>
           )}
         </div>
       </div>

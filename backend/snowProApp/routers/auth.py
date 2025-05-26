@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Form
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, EmailStr
 from models import Users, Students, Instructors, CertificationBodyEnum, QualificationLevelEnum
 from passlib.context import CryptContext
@@ -17,7 +17,7 @@ SECRET_KEY = 'df458d5c559d12ca06ddfd80540cf6b23599ad42e8a1f5fedf1202cbd25491fb'
 ALGORITHM = 'HS256'
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
-oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")
+oauth2_bearer = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 class CreateUserRequest(BaseModel):
    
@@ -146,6 +146,7 @@ async def login_for_access_token(
             "last_name": user.last_name,
             "email": user.email,
             "role": user.role,
-            "is_active": user.is_active
+            "is_active": user.is_active,
+            "profile_picture": user.profile_picture
         }
     }
