@@ -1,10 +1,13 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/Homepage.css";
 import visionImg from "../assets/vision.avif";
 import missionImg from "../assets/mission.jpg";
 import Wave from "../components/Wave";
 
 export default function Homepage() {
+  const navigate = useNavigate();
+
   return (
     <div className="homepage">
       <section className="hero-section">
@@ -16,7 +19,9 @@ export default function Homepage() {
           <p>
             Book ski and snowboard lessons in seconds — right from your device.
           </p>
-          <button className="cta-button">Get Started</button>
+          <button className="cta-button" onClick={() => navigate("/booking")}>
+            Get Started
+          </button>
         </div>
       </section>
 

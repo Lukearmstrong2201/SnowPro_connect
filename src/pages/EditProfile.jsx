@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../styles/EditProfile.css";
 import { useAuth } from "../context/AuthContext";
+import { getResortsList } from "../services/api";
 
 export default function EditProfile() {
   const { user, token, login } = useAuth();
@@ -12,7 +13,8 @@ export default function EditProfile() {
     address: user?.address || "",
     language: user?.language || "",
   });
-
+  const [resortsList, setResortsList] = useState([]);
+  const [localResort, setLocalResort] = useState("");
   const [profileImage, setProfileImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(user?.profile_picture || "");
 
@@ -21,6 +23,38 @@ export default function EditProfile() {
       setPreviewUrl(user.profile_picture);
     }
   }, [user]);
+
+  // Fetch resort names from your API
+  useEffect(() => {
+    getResortsList()
+      .then((resorts) => {
+        const names = resorts.map((resort) => resort.name);
+        setResortsList(names);
+      })
+      .catch((err) => console.error("Failed to fetch resorts:", err));
+  }, []);
+
+  useEffect(() => {
+    const fetchInstructorResort = async () => {
+      if (user?.role === "instructor") {
+        try {
+          const res = await fetch("/instructors/me", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const instructorData = await res.json();
+          setLocalResort(instructorData.local_resort || "");
+        } catch (err) {
+          console.error("Failed to fetch instructor resort:", err);
+        }
+      }
+    };
+
+    fetchInstructorResort();
+  }, [user, token]);
+
+  if (!user) {
+    return <div>Loading profile...</div>;
+  }
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -38,10 +72,8 @@ export default function EditProfile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Token:", token);
-
     try {
-      // Update profile info (PATCH)
+      // Update profile info
       const res1 = await fetch(`/users/${user.id}`, {
         method: "PATCH",
         headers: {
@@ -69,14 +101,28 @@ export default function EditProfile() {
         if (!res2.ok) throw new Error("Failed to upload profile picture");
       }
 
+      // Update instructor's resort
+      if (user.role === "instructor" && localResort) {
+        const res3 = await fetch(`/instructors/update-local-resort`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ local_resort: localResort }),
+        });
+
+        if (!res3.ok) throw new Error("Failed to update local resort");
+      }
+
       // Refresh user data
-      const res3 = await fetch(`/users/${user.id}`, {
+      const res4 = await fetch(`/users/${user.id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      const updatedUser = await res3.json();
+      const updatedUser = await res4.json();
       login(updatedUser, token);
       alert("Profile updated successfully!");
     } catch (err) {
@@ -147,6 +193,21 @@ export default function EditProfile() {
             value={formData.language}
             onChange={handleInputChange}
           />
+          {user.role === "instructor" && (
+            <select
+              id="local_resort"
+              value={localResort}
+              onChange={(e) => setLocalResort(e.target.value)}
+              className="resort-dropdown"
+            >
+              <option value="">Select Local Ski Resort</option>
+              {resortsList.map((resort) => (
+                <option key={resort} value={resort}>
+                  {resort}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         <button type="submit" className="save-profile-btn">

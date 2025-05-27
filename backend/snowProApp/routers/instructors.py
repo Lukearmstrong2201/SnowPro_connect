@@ -42,6 +42,7 @@ async def get_own_instructor_profile(db: db_dependency, user: user_dependency):
         level_of_qualification=instructor.level_of_qualification,
         years_of_experience=instructor.years_of_experience,
         local_resort=instructor.local_resort,
+        profile_picture=user.profile_picture
     )
 
 # GET a specific instructor by ID
@@ -73,6 +74,7 @@ async def get_instructor(instructor_id: int, db: db_dependency, user: user_depen
         certificate_body=instructor.certificate_body,
         level_of_qualification=instructor.level_of_qualification,
         years_of_experience=instructor.years_of_experience,
+        profile_picture=instructor_user.profile_picture
     )
 
 # PATCH to update instructor's local resort
@@ -122,6 +124,7 @@ async def get_instructors_by_resort(
             level_of_qualification=inst.level_of_qualification,
             years_of_experience=inst.years_of_experience,
             local_resort=inst.local_resort,
+            profile_picture=user.profile_picture
         ))
 
     return results
