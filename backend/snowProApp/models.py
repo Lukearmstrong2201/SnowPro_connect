@@ -3,9 +3,14 @@
 # This will be the record of what is actually inside the database table
 
 from database import Base
-from sqlalchemy import Column, Integer, String, Date, ForeignKey, Enum, Boolean
-from sqlalchemy.orm import relationship, validates
+from sqlalchemy import Column, Integer, String, Date, DateTime, ForeignKey, Enum, Boolean, Text, Time
+from sqlalchemy.orm import relationship
 import enum
+
+class LessonStatusEnum(str, enum.Enum):
+    pending = "pending"
+    accepted = "accepted"
+    rejected = "rejected"
 
 #Enum for certification bodies (CASI, CSIA, NZSIA, BASI)
 class CertificationBodyEnum(str, enum.Enum):
@@ -41,7 +46,20 @@ class Users(Base):
     student = relationship("Students", back_populates="user", uselist=False)
     instructor = relationship("Instructors", back_populates="user", uselist=False)
 
+class Lessons(Base):
+    __tablename__ = "lesson_requests"
 
+    id = Column(Integer, primary_key=True, index=True)
+    student_id = Column(Integer, ForeignKey("students.id"))
+    instructor_id = Column(Integer, ForeignKey("instructors.id"))
+    date = Column(DateTime, nullable=False)
+    time = Column(String, nullable=False)
+    ski_resort = Column(String, nullable=True)
+    status = Column(String, default="pending")
+    rejection_reason = Column(String, nullable=True)
+
+    student = relationship("Students", back_populates="lessons")
+    instructor = relationship("Instructors", back_populates="lessons")
 
 class Students(Base):
     __tablename__ = "students"
@@ -50,6 +68,7 @@ class Students(Base):
     user_id = Column(Integer, ForeignKey("users.id"), unique=True)  # Link to Users table
     
     user = relationship("Users", back_populates="student")
+    lessons = relationship("Lessons", back_populates="student", cascade="all, delete")
 
 class Instructors(Base):
     __tablename__ = "instructors"
@@ -62,6 +81,11 @@ class Instructors(Base):
     local_resort = Column(String) 
     
     user = relationship("Users", back_populates="instructor")
+    lessons = relationship("Lessons", back_populates="instructor", cascade="all, delete")
+
+
+
+
 
 
 

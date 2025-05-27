@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from models import Instructors, Users
 from database import SessionLocal
 from sqlalchemy.orm import Session
 from .auth import get_current_user
-from typing import Annotated
+from typing import Annotated, List
 from schemas.instructors import InstructorResponse, InstructorUpdate
 
 router = APIRouter(prefix="/instructors", tags=["Instructors"])  
@@ -44,7 +44,7 @@ async def get_own_instructor_profile(db: db_dependency, user: user_dependency):
         local_resort=instructor.local_resort,
     )
 
-
+# GET a specific instructor by ID
 @router.get("/{instructor_id}", status_code=200)
 async def get_instructor(instructor_id: int, db: db_dependency, user: user_dependency):
 
@@ -75,6 +75,7 @@ async def get_instructor(instructor_id: int, db: db_dependency, user: user_depen
         years_of_experience=instructor.years_of_experience,
     )
 
+# PATCH to update instructor's local resort
 @router.patch("/update-local-resort", status_code=200)
 async def update_local_resort(
     update_data: InstructorUpdate,
@@ -94,3 +95,33 @@ async def update_local_resort(
     db.commit()
     db.refresh(instructor)
     return {"message": "Local resort updated successfully", "local_resort": instructor.local_resort}
+
+# GET all instructors by resort
+@router.get("", response_model=List[InstructorResponse])
+async def get_instructors_by_resort(
+    db: db_dependency,
+    resort: str = Query(..., min_length=1)
+):
+    instructors = db.query(Instructors).filter(Instructors.local_resort == resort.lower()).all()
+
+    results = []
+    for inst in instructors:
+        user = inst.user
+        results.append(InstructorResponse(
+            id=user.id,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            email=user.email,
+            contact=user.contact,
+            address=user.address,
+            language=user.language,
+            date_of_birth=user.date_of_birth,
+            role=user.role,
+            is_active=user.is_active,
+            certificate_body=inst.certificate_body,
+            level_of_qualification=inst.level_of_qualification,
+            years_of_experience=inst.years_of_experience,
+            local_resort=inst.local_resort,
+        ))
+
+    return results
