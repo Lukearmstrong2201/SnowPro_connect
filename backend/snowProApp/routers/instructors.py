@@ -4,7 +4,7 @@ from database import SessionLocal
 from sqlalchemy.orm import Session
 from .auth import get_current_user
 from typing import Annotated
-from schemas.instructors import InstructorResponse
+from schemas.instructors import InstructorResponse, InstructorUpdate
 
 router = APIRouter(prefix="/instructors", tags=["Instructors"])  
 
@@ -41,6 +41,7 @@ async def get_own_instructor_profile(db: db_dependency, user: user_dependency):
         certificate_body=instructor.certificate_body,
         level_of_qualification=instructor.level_of_qualification,
         years_of_experience=instructor.years_of_experience,
+        local_resort=instructor.local_resort,
     )
 
 
@@ -73,3 +74,23 @@ async def get_instructor(instructor_id: int, db: db_dependency, user: user_depen
         level_of_qualification=instructor.level_of_qualification,
         years_of_experience=instructor.years_of_experience,
     )
+
+@router.patch("/update-local-resort", status_code=200)
+async def update_local_resort(
+    update_data: InstructorUpdate,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    if current_user.role != "instructor":
+        raise HTTPException(status_code=403, detail="Only instructors can update this.")
+
+    instructor = db.query(Instructors).filter(Instructors.user_id == current_user.id).first()
+    if not instructor:
+        raise HTTPException(status_code=404, detail="Instructor not found.")
+
+    if update_data.local_resort:
+        instructor.local_resort = update_data.local_resort
+
+    db.commit()
+    db.refresh(instructor)
+    return {"message": "Local resort updated successfully", "local_resort": instructor.local_resort}

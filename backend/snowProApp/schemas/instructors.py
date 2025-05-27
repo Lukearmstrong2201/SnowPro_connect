@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from typing import Annotated
+from pydantic import BaseModel, constr, field_validator
 from schemas.users import UserResponse 
 from enum import Enum
 from datetime import date
@@ -22,6 +23,7 @@ class InstructorResponse(UserResponse):
     certificate_body: CertificationBodyEnum
     level_of_qualification: QualificationLevelEnum
     years_of_experience: int
+    local_resort: str | None = None
     class Config:
         from_attributes = True
 
@@ -32,3 +34,11 @@ class InstructorCreateUpdate(BaseModel):
     years_of_experience: int
     class Config:
         from_attributes = True
+
+class InstructorUpdate(BaseModel):
+    local_resort: Annotated[str | None, constr(max_length=100)]= None
+                         
+    @field_validator("local_resort")
+    @classmethod
+    def lowercase_resort(cls, value):
+        return value.lower() if value else value

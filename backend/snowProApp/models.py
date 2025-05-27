@@ -58,7 +58,8 @@ class Instructors(Base):
     user_id = Column(Integer, ForeignKey("users.id"), unique=True)  # Link to Users table
     certificate_body = Column(Enum(CertificationBodyEnum), nullable=False)  
     level_of_qualification = Column(Enum(QualificationLevelEnum), nullable=False)  
-    years_of_experience = Column(Integer, nullable=False) 
+    years_of_experience = Column(Integer, nullable=False)
+    local_resort = Column(String) 
     
     user = relationship("Users", back_populates="instructor")
 
