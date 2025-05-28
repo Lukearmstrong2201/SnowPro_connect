@@ -6,6 +6,7 @@ from database import Base
 from sqlalchemy import Column, Integer, String, Date, DateTime, ForeignKey, Enum, Boolean, Text, Time
 from sqlalchemy.orm import relationship
 import enum
+from sqlalchemy import PrimaryKeyConstraint
 
 class LessonStatusEnum(str, enum.Enum):
     pending = "pending"
@@ -47,7 +48,7 @@ class Users(Base):
     instructor = relationship("Instructors", back_populates="user", uselist=False)
 
 class Lessons(Base):
-    __tablename__ = "lesson_requests"
+    __tablename__ = "lessons"
 
     id = Column(Integer, primary_key=True, index=True)
     student_id = Column(Integer, ForeignKey("students.id"))
@@ -60,6 +61,7 @@ class Lessons(Base):
 
     student = relationship("Students", back_populates="lessons")
     instructor = relationship("Instructors", back_populates="lessons")
+    booked_slot = relationship("BookedSlot", back_populates="lesson", uselist=False) 
 
 class Students(Base):
     __tablename__ = "students"
@@ -82,6 +84,37 @@ class Instructors(Base):
     
     user = relationship("Users", back_populates="instructor")
     lessons = relationship("Lessons", back_populates="instructor", cascade="all, delete")
+
+    # Relationship back to availability
+    availabilities = relationship("InstructorAvailability", back_populates="instructor")
+    # Relationship back to bookedSlot
+    booked_slots = relationship("BookedSlot", back_populates="instructor")
+
+class InstructorAvailability(Base):
+    __tablename__ = "instructor_availabilities"
+
+    instructor_id = Column(Integer, ForeignKey("instructors.id"))
+    day_of_week = Column(String, nullable=False) 
+    start_time = Column(Time, nullable=False)
+    end_time = Column(Time, nullable=False)
+
+    instructor = relationship("Instructors", back_populates="availabilities")
+
+    __table_args__ = (
+        PrimaryKeyConstraint('instructor_id', 'day_of_week', 'start_time'),
+    )
+
+class BookedSlot(Base):
+    __tablename__ = "booked_slots"
+
+    id = Column(Integer, primary_key=True, index=True)
+    instructor_id = Column(Integer, ForeignKey("instructors.id"))
+    lesson_id = Column(Integer, ForeignKey("lessons.id"))
+    date = Column(Date, nullable=False)
+    start_time = Column(Time, nullable=False)
+
+    instructor = relationship("Instructors", back_populates="booked_slots")
+    lesson = relationship("Lessons", back_populates="booked_slot") 
 
 
 

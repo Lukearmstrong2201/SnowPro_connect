@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from datetime import datetime
+from datetime import datetime, date, time
 
 from database import SessionLocal
-from models import LessonRequests, Users
+from models import Lessons, Users, InstructorAvailability, BookedSlot
 from schemas.lessons import LessonRequestCreate, LessonResponse
 from .auth import get_current_user
 
@@ -28,7 +28,7 @@ def create_lesson_request(
     if current_user.role != "student":
         raise HTTPException(status_code=403, detail="Only students can request lessons.")
 
-    lesson = LessonRequests(
+    lesson = Lessons(
         student_id=current_user.id,
         instructor_id=request_data.instructor_id,
         date=request_data.date,
@@ -49,7 +49,7 @@ def get_lesson_requests_for_instructor(
     if current_user.role != "instructor":
         raise HTTPException(status_code=403, detail="Only instructors can view lesson requests.")
 
-    lessons = db.query(LessonRequests).filter(LessonRequests.instructor_id == current_user.id).all()
+    lessons = db.query(Lessons).filter(Lessons.instructor_id == current_user.id).all()
     return lessons
 
 
@@ -59,7 +59,7 @@ def accept_lesson(
     db: Session = Depends(get_db),
     current_user: Users = Depends(get_current_user)
 ):
-    lesson = db.query(LessonRequests).filter(LessonRequests.id == lesson_id).first()
+    lesson = db.query(Lessons).filter(Lessons.id == lesson_id).first()
 
     if not lesson:
         raise HTTPException(status_code=404, detail="Lesson request not found")
@@ -79,7 +79,7 @@ def reject_lesson(
     db: Session = Depends(get_db),
     current_user: Users = Depends(get_current_user)
 ):
-    lesson = db.query(LessonRequests).filter(LessonRequests.id == lesson_id).first()
+    lesson = db.query(Lessons).filter(Lessons.id == lesson_id).first()
 
     if not lesson:
         raise HTTPException(status_code=404, detail="Lesson request not found")
@@ -91,3 +91,38 @@ def reject_lesson(
     db.commit()
     db.refresh(lesson)
     return lesson
+
+@router.post("/lesson/{lesson_id}/book")
+async def book_slot(
+    lesson_id: int, 
+    instructor_id: int, 
+    date: date, 
+    start_time: time, 
+    db: Session = Depends(get_db)
+):
+    # Check if the slot is available
+    available_slot = db.query(InstructorAvailability).filter(
+        InstructorAvailability.instructor_id == instructor_id,
+        InstructorAvailability.day_of_week == date.strftime("%A"),
+        InstructorAvailability.start_time == start_time
+    ).first()
+
+    if not available_slot:
+        raise HTTPException(status_code=404, detail="Slot not available")
+
+    # Mark slot as booked
+    booked_slot = BookedSlot(
+        instructor_id=instructor_id,
+        lesson_id=lesson_id,
+        date=date,
+        start_time=start_time
+    )
+    db.add(booked_slot)
+    db.commit()
+
+    # Change lesson status to "accepted"
+    lesson = db.query(Lessons).filter(Lessons.id == lesson_id).first()
+    lesson.status = "accepted"
+    db.commit()
+
+    return {"message": "Lesson successfully booked!"}
