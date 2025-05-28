@@ -1,40 +1,70 @@
 import "../styles/StudentDashboard.css";
 import { useState, useEffect } from "react";
+import InstructorAvailabilityForm from "../components/InstructorAvailabilityForm";
+import AvailableSlots from "../components/AvailableSlots"; // Import the AvailableSlots component
+import axios from "axios";
 
 export default function InstructorDashboard() {
   const [pendingRequests, setPendingRequests] = useState([]);
   const [acceptedLessons, setAcceptedLessons] = useState([]);
+  const [instructorData, setInstructorData] = useState(null); // For storing instructor profile info
+  const [selectedDay, setSelectedDay] = useState(null); // Track selected day for availability
+  const [availability, setAvailability] = useState({
+    Monday: { start_time: "", end_time: "" },
+    Tuesday: { start_time: "", end_time: "" },
+    Wednesday: { start_time: "", end_time: "" },
+    Thursday: { start_time: "", end_time: "" },
+    Friday: { start_time: "", end_time: "" },
+    Saturday: { start_time: "", end_time: "" },
+    Sunday: { start_time: "", end_time: "" },
+  });
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split("T")[0]
+  ); // Default to today's date
 
-  const mockLessonRequests = [
-    {
-      id: 1,
-      studentName: "Karyn Loney",
-      date: "2025-06-01",
-      time: "10:00 AM",
-      status: "pending",
-    },
-    {
-      id: 2,
-      studentName: "Rachael Dawes",
-      date: "2025-06-03",
-      time: "2:00 PM",
-      status: "accepted",
-    },
-    {
-      id: 3,
-      studentName: "Harry Tucker",
-      date: "2025-05-28",
-      time: "1:30 PM",
-      status: "rejected",
-    },
-  ];
+  const instructorId = 1; // This should come from your auth/user state
 
+  // Fetch data for pending requests, accepted lessons, and instructor details
   useEffect(() => {
-    const pending = mockLessonRequests.filter((r) => r.status === "pending");
-    const accepted = mockLessonRequests.filter((r) => r.status === "accepted");
-    setPendingRequests(pending);
-    setAcceptedLessons(accepted);
-  }, []);
+    const fetchData = async () => {
+      try {
+        const lessonRequestsResponse = await axios.get(
+          `/api/instructor/${instructorId}/lesson-requests`
+        );
+        const pending = lessonRequestsResponse.data.filter(
+          (r) => r.status === "pending"
+        );
+        const accepted = lessonRequestsResponse.data.filter(
+          (r) => r.status === "accepted"
+        );
+
+        setPendingRequests(pending);
+        setAcceptedLessons(accepted);
+
+        const instructorProfileResponse = await axios.get(
+          `/api/instructor/${instructorId}`
+        );
+        setInstructorData(instructorProfileResponse.data);
+      } catch (error) {
+        console.error("Error fetching data", error);
+      }
+    };
+
+    fetchData();
+  }, [instructorId]);
+
+  // Handle availability time changes for the selected day
+  const handleTimeChange = (day, type, value) => {
+    setAvailability((prev) => ({
+      ...prev,
+      [day]: { ...prev[day], [type]: value },
+    }));
+  };
+
+  // Handle day selection (e.g., Monday, Tuesday, etc.)
+  const handleDaySelect = (day) => {
+    setSelectedDay(day);
+  };
 
   const handleAccept = (id) => {
     const request = pendingRequests.find((r) => r.id === id);
@@ -47,7 +77,23 @@ export default function InstructorDashboard() {
 
   const handleReject = (id) => {
     setPendingRequests((prev) => prev.filter((r) => r.id !== id));
-    // You could store rejected items if needed
+  };
+
+  const handleDateChange = (e) => {
+    setSelectedDate(e.target.value);
+  };
+
+  // Submit the availability
+  const handleSubmitAvailability = async () => {
+    try {
+      await axios.post(
+        `/api/instructor/${instructorId}/set-availability`,
+        availability
+      );
+      alert("Availability updated successfully!");
+    } catch (error) {
+      console.error("Error updating availability", error);
+    }
   };
 
   return (
@@ -57,20 +103,43 @@ export default function InstructorDashboard() {
         <div className="personal-details-grid">
           <div className="card">
             <h3>Profile Summary</h3>
-            <p>Luke Armstrong</p>
+            {instructorData ? (
+              <p>
+                {instructorData.first_name} {instructorData.last_name}
+              </p>
+            ) : (
+              <p>Loading...</p>
+            )}
           </div>
           <div className="card">
             <h3>Certifications</h3>
-            <p>CASI – Level 2</p>
+            {instructorData ? (
+              <p>
+                {instructorData.certification_body} – Level{" "}
+                {instructorData.level_of_qualification}
+              </p>
+            ) : (
+              <p>Loading...</p>
+            )}
           </div>
           <div className="card">
             <h3>Experience</h3>
-            <p>5 Years</p>
+            {instructorData ? (
+              <p>{instructorData.years_of_experience} Years</p>
+            ) : (
+              <p>Loading...</p>
+            )}
           </div>
           <div className="card">
             <h3>Contact Info</h3>
-            <p>Email: luke@example.com</p>
-            <p>Phone: 07572421816</p>
+            {instructorData ? (
+              <>
+                <p>Email: {instructorData.email}</p>
+                <p>Phone: {instructorData.contact}</p>
+              </>
+            ) : (
+              <p>Loading...</p>
+            )}
           </div>
         </div>
       </section>
@@ -138,6 +207,59 @@ export default function InstructorDashboard() {
             )}
           </div>
         </div>
+      </section>
+
+      {/* Manage Instructor Availability */}
+      <section>
+        <h3 className="section-title">Set Weekly Availability</h3>
+        <div className="days-buttons">
+          {[
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday",
+          ].map((day) => (
+            <button
+              key={day}
+              className={`day-btn ${selectedDay === day ? "selected" : ""}`}
+              onClick={() => handleDaySelect(day)}
+            >
+              {day}
+            </button>
+          ))}
+        </div>
+
+        {selectedDay && (
+          <div className="availability-form">
+            <h4>{selectedDay} Availability</h4>
+            <label>
+              Start Time:
+              <input
+                type="time"
+                value={availability[selectedDay]?.start_time || ""}
+                onChange={(e) =>
+                  handleTimeChange(selectedDay, "start_time", e.target.value)
+                }
+              />
+            </label>
+            <label>
+              End Time:
+              <input
+                type="time"
+                value={availability[selectedDay]?.end_time || ""}
+                onChange={(e) =>
+                  handleTimeChange(selectedDay, "end_time", e.target.value)
+                }
+              />
+            </label>
+          </div>
+        )}
+        <button className="submit-btn" onClick={handleSubmitAvailability}>
+          Submit Availability
+        </button>
       </section>
     </>
   );

@@ -120,34 +120,113 @@ h3 {
   color: #444;
 }
 
-.request-buttons {
-  margin-top: 12px;
-  display: flex;
-  gap: 10px;
-}
-
+/* Styling for the buttons */
 .request-buttons button {
-  padding: 6px 12px;
+  padding: 8px 16px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: 500;
-  font-size: 0.9rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
 }
 
 .accept-btn {
   background-color: #4caf50;
   color: white;
+  border-radius: 8px;
+}
+
+.accept-btn:hover {
+  background-color: #45a049;
 }
 
 .reject-btn {
   background-color: #f44336;
   color: white;
+  border-radius: 8px;
+}
+
+.reject-btn:hover {
+  background-color: #e53935;
 }
 
 .profile-btn {
   background-color: #1976d2;
   color: white;
+  border-radius: 8px;
+}
+
+.profile-btn:hover {
+  background-color: #1565c0;
+}
+
+/* Day selection buttons */
+.days-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.day-btn {
+  padding: 12px 24px;
+  border: 2px solid #1976d2;
+  background-color: #fff;
+  color: #1976d2;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.day-btn:hover {
+  background-color: #1976d2;
+  color: white;
+}
+
+.day-btn.selected {
+  background-color: #1976d2;
+  color: white;
+}
+
+/* Availability form styles */
+.availability-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.availability-form label {
+  font-size: 1rem;
+}
+
+.availability-form input {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-top: 10px;
+}
+
+.submit-btn {
+  width: auto; /* Adjust to auto width to shrink based on content */
+  padding: 8px 16px; /* Smaller padding for a more compact button */
+  background-color: #28a745;
+  color: white;
+  font-size: 1rem; /* Adjust font size to match other buttons */
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 0 auto; /* Center the button */
+  display: block; /* Ensure it behaves as a block element for centering */
+  box-shadow: none; /* Remove the shadow */
+}
+
+.submit-btn:hover {
+  background-color: #218838;
 }
 
 /* Responsive adjustments */
@@ -159,5 +238,10 @@ h3 {
 
   .upcoming-lessons-section {
     grid-row: span 1;
+  }
+
+  .days-buttons {
+    flex-direction: column;
+    gap: 10px;
   }
 }
