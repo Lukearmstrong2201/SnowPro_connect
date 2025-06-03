@@ -3,7 +3,7 @@
 from fastapi import FastAPI
 import models
 from database import engine
-from routers import auth, users, students, instructors, admin, booking
+from routers import auth, users, students, instructors, admin, booking, lessons, availability
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
@@ -31,6 +31,8 @@ app.include_router(students.router)
 app.include_router(instructors.router)
 app.include_router(admin.router)
 app.include_router(booking.router)
+app.include_router(availability.router) 
+app.include_router(lessons.router)
 
 # Serve static files (uploaded images)
 if not os.path.exists("static/profile_pics"):

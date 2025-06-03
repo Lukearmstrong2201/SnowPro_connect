@@ -2,7 +2,7 @@ from typing import Annotated, Optional
 from pydantic import BaseModel, constr, field_validator
 from schemas.users import UserResponse 
 from enum import Enum
-from datetime import date
+from datetime import date, time
 
 
 class CertificationBodyEnum(str, Enum):
@@ -43,3 +43,13 @@ class InstructorUpdate(BaseModel):
     @classmethod
     def lowercase_resort(cls, value):
         return value.lower() if value else value
+
+class InstructorAvailability(BaseModel):
+    instructor_id: int
+    day_of_week: str  
+    date: date        #(YYYY-MM-DD)
+    start_time: time  
+    end_time: time    
+
+    class Config:
+        orm_mode = True  

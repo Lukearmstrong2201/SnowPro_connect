@@ -94,15 +94,18 @@ class InstructorAvailability(Base):
     __tablename__ = "instructor_availabilities"
 
     instructor_id = Column(Integer, ForeignKey("instructors.id"))
-    day_of_week = Column(String, nullable=False) 
-    start_time = Column(Time, nullable=False)
+    day_of_week = Column(String)
+    start_time = Column(Time)
+    date = Column(Date, nullable=False)
     end_time = Column(Time, nullable=False)
 
     instructor = relationship("Instructors", back_populates="availabilities")
 
+    # Define composite primary key
     __table_args__ = (
         PrimaryKeyConstraint('instructor_id', 'day_of_week', 'start_time'),
     )
+
 
 class BookedSlot(Base):
     __tablename__ = "booked_slots"

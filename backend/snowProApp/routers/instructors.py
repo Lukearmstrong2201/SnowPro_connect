@@ -5,8 +5,11 @@ from sqlalchemy.orm import Session
 from .auth import get_current_user
 from typing import Annotated, List
 from schemas.instructors import InstructorResponse, InstructorUpdate
-from datetime import date
+from schemas.availability import AvailabilityRequest, AvailabilitySlot, InstructorAvailabilityResponse
+from datetime import date, datetime
 from pydantic import BaseModel
+from sqlalchemy.exc import IntegrityError
+
 
 router = APIRouter(prefix="/instructors", tags=["Instructors"])  
 
@@ -21,12 +24,6 @@ def get_db():
 # Dependency to get the current authenticated user
 db_dependency = Annotated[Session, Depends(get_db)]
 user_dependency = Annotated[Users, Depends(get_current_user)]
-
-# Pydantic model for Availability Slot
-class AvailabilitySlot(BaseModel):
-    day_of_week: str  # e.g., 'Monday', 'Tuesday', etc.
-    start_time: str  # Time format "HH:MM"
-    end_time: str    # Time format "HH:MM"
 
 # GET the currently authenticated instructor's profile
 @router.get("/me", response_model=InstructorResponse)
@@ -139,65 +136,53 @@ async def get_instructors_by_resort(
     return results
 
 # POST to set instructor availability
-@router.post("/instructor/{instructor_id}/set-availability")
+@router.post("/{instructor_id}/set-availability", response_model=List[InstructorAvailabilityResponse])
 async def set_availability(
-    instructor_id: int, 
-    availability: List[AvailabilitySlot],  # List of available times for each day of the week
+    instructor_id: int,
+    availability: List[AvailabilitySlot],
     db: Session = Depends(get_db)
 ):
-    instructor = db.query(Instructors).filter(Instructors.id == instructor_id).first()
-    if not instructor:
-        raise HTTPException(status_code=404, detail="Instructor not found")
+    try:
+        # Delete existing availability for this instructor
+        db.query(InstructorAvailability).filter(
+            InstructorAvailability.instructor_id == instructor_id
+        ).delete(synchronize_session=False)
+        db.commit()
 
-    # Clear existing availability and set new
-    db.query(InstructorAvailability).filter(InstructorAvailability.instructor_id == instructor_id).delete()
-    db.commit()
+        # Convert the Pydantic input to SQLAlchemy models
+        availability_data = [
+            InstructorAvailability(
+                instructor_id=instructor_id,
+                day_of_week=slot.day_of_week,
+                date=slot.date,
+                start_time=datetime.strptime(slot.start_time, "%H:%M").time(),
+                end_time=datetime.strptime(slot.end_time, "%H:%M").time()
+            )
+            for slot in availability
+        ]
+        
+        # Add the new availability records
+        db.add_all(availability_data)
+        db.commit()
 
-    for slot in availability:
-        day_of_week = slot.day_of_week
-        start_time = slot.start_time
-        end_time = slot.end_time
-        availability_entry = InstructorAvailability(
-            instructor_id=instructor_id,
-            day_of_week=day_of_week,
-            start_time=start_time,
-            end_time=end_time
-        )
-        db.add(availability_entry)
-    db.commit()
+        # Return the updated availability as Pydantic models
+        return [
+            InstructorAvailabilityResponse(
+                instructor_id=slot.instructor_id,
+                day_of_week=slot.day_of_week,
+                date=slot.date,
+                start_time=slot.start_time,
+                end_time=slot.end_time
+            )
+            for slot in availability_data
+        ]
 
-    return {"message": "Availability updated successfully."}
+    except IntegrityError as e:
+        print("Error:", e)
+        db.rollback()  # Rollback in case of any error
+        raise HTTPException(status_code=400, detail="Duplicate availability slot detected.")
+    except Exception as e:
+        print("Error:", e)
+        db.rollback()  # Rollback in case of any error
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
-# GET available slots for a given instructor and date
-@router.get("/instructor/{instructor_id}/availability")
-async def get_available_slots(
-    instructor_id: int, 
-    date: date, 
-    db: Session = Depends(get_db)
-):
-    # Get the day of the week for the selected date
-    day_of_week = date.strftime("%A")
-    
-    # Fetch availability for this day
-    available_slots = db.query(InstructorAvailability).filter(
-        InstructorAvailability.instructor_id == instructor_id,
-        InstructorAvailability.day_of_week == day_of_week
-    ).all()
-
-    # Filter out already booked slots
-    booked_slots = db.query(BookedSlot).filter(
-        BookedSlot.instructor_id == instructor_id,
-        BookedSlot.date == date
-    ).all()
-
-    # Create a list of available time slots for the instructor on this date
-    available_times = []
-    for slot in available_slots:
-        is_booked = any(booked_slot.start_time == slot.start_time for booked_slot in booked_slots)
-        if not is_booked:
-            available_times.append({
-                "start_time": slot.start_time,
-                "end_time": slot.end_time
-            })
-    
-    return available_times
