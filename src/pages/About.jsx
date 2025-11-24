@@ -1,10 +1,12 @@
 "use client";
-
+import React from "react";
 import Wave from "../components/Wave";
 import instructorWalk from "../assets/instructor-walk.jpg";
 import bookLesson from "../assets/book-with-ease.png";
 import stayconnected from "../assets/stay-connected.jpg";
 import instructor from "../assets/carving.jpg";
+import teamImage from "../assets/teamImage.jpg";
+
 import { motion } from "framer-motion";
 import "../styles/About.css";
 
@@ -33,6 +35,13 @@ export default function About() {
   return (
     <>
       <div className="about-hero">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 319">
+          <path
+            fill="#fff"
+            fillOpacity="1"
+            d="M0,96L180,288L360,192L540,320L720,96L900,224L1080,128L1260,224L1440,128L1440,320L1260,320L1080,320L900,320L720,320L540,320L360,320L180,320L0,320Z"
+          ></path>
+        </svg>
         <div className="about-hero-overlay" />
         <img
           src={instructor}
@@ -58,6 +67,43 @@ export default function About() {
           </p>
         </div>
       </div>
+      <div className="team-container">
+        <h2>Meet The Founder</h2>
+        <div className="team-section">
+          <div className="team-card">
+            <p>
+              Hi everyone! I'm <strong>Luke</strong>, the founder of this
+              platform and a former snowboard instructor. During my time
+              teaching, I saw firsthand how overwhelming the demand on ski
+              schools can be—leaving many guests without lessons and many
+              instructors wishing they had more flexibility.
+            </p>
+            <p>
+              This app was created to solve that problem. I wanted to make it
+              easier for guests to find qualified snowboard instructors, give
+              instructors the freedom to freelance, and help reduce pressure on
+              ski schools during peak seasons.
+            </p>
+            <p>
+              My goal is simple: connect riders with instructors quickly,
+              easily, and reliably—so no one misses out on an amazing day on the
+              mountain.
+            </p>
+          </div>
+
+          <div className="team-image-wrapper">
+            <img src={teamImage} className="team-image" alt="Founder" />
+
+            <div className="team-info">
+              <h3>Luke Armstrong</h3>
+              <p>Founder & Developer</p>
+              <p>CASI Level 3 Snowboard Instructor</p>
+              <p>Freestyle & Backcountry Training</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <main className="about-container">
         {sections.map((section, i) => (
           <motion.section

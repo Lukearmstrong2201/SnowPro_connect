@@ -4,6 +4,91 @@ body {
   padding: 0;
 }
 
+.team-container {
+  background: linear-gradient(to bottom, #ffffff, #f5f5f5);
+  padding: 70px;
+  position: relative;
+  margin-top: -2px;
+  z-index: 10;
+}
+
+.team-container h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  background-color: #ff6a00;
+  padding: 12px 36px;
+  border-radius: 18px;
+  width: fit-content;
+  margin: 0 auto 40px auto;
+}
+
+.team-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  max-width: 1100px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+
+.team-card {
+  background-color: #ffffff;
+  padding: 25px 30px;
+  border-radius: 16px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  width: 55%;
+  min-width: 300px;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* IMAGE + INFO COLUMN (flexbox!) */
+.team-image-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.team-image {
+  border-radius: 50%;
+  height: 240px;
+  width: 240px;
+  object-fit: cover;
+  border: 6px solid #ff6a00;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.team-info {
+  background: #ffffff;
+  padding: 15px 20px;
+  border-radius: 14px;
+  text-align: center;
+  width: 240px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.team-info h3 {
+  font-size: 1.25rem;
+  margin-bottom: 5px;
+  font-weight: 700;
+}
+
+.team-info p {
+  margin: 4px 0;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+/* MOBILE */
+@media (max-width: 800px) {
+  .team-card {
+    width: 100%;
+  }
+}
+
 .about-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -15,9 +100,19 @@ body {
   position: relative;
   height: 1200px;
   width: 100vw;
-  margin-bottom: 3rem;
   overflow: hidden;
-  border-radius: 12px;
+}
+
+.about-hero svg {
+  display: block;
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: auto;
+  z-index: 999;
+  pointer-events: none;
+  transform: translateY(1px);
 }
 
 .about-hero-content {
@@ -27,6 +122,7 @@ body {
   margin: 0 auto;
   padding: 0 20px;
   text-align: left;
+  color: ;
 }
 
 .about-hero-bg {

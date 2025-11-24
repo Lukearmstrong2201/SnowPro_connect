@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Homepage.css";
 import visionImg from "../assets/vision.avif";
