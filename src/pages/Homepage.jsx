@@ -3,6 +3,7 @@ import "../styles/Homepage.css";
 import visionImg from "../assets/vision.avif";
 import missionImg from "../assets/mission.jpg";
 import ReviewsSection from "../components/ReviewSection";
+import FeaturesSection from "../components/FeaturesSection";
 import Wave from "../components/Wave";
 
 export default function Homepage() {
@@ -63,36 +64,9 @@ export default function Homepage() {
         </div>
       </section>
 
-      <section className="features-section">
-        <h2 className="section-title">What We Offer</h2>
-        <div className="features">
-          <div className="feature-card">
-            <h3>Flexible Bookings With Top Instructors</h3>
-            <p>
-              You decide when and where you want your booking. You decide your
-              instructor level. Prefered language. Ski or Snowboard! We are here
-              for you!
-            </p>
-          </div>
-          <div className="feature-card">
-            <h3>Personal Dashboard & Progrssion Monitoring</h3>
-            <p>
-              Browse through highly-rated instructors based on your preferences.
-              Receive a personal dashboard with your progress and feeback. Pick
-              up where you left of with instructors of your choice.
-            </p>
-          </div>
-          <div className="feature-card">
-            <h3>Build custom packages</h3>
-            <p>
-              Choose customized lesson packages that fit your needs and
-              schedule. Personal or group lessons...No Problem!. We create your
-              perfect lessons and get you shredding the mountain like a pro.
-            </p>
-          </div>
-        </div>
-      </section>
-
+      {/* Feature Section */}
+      <FeaturesSection />
+      {/* Review Section */}
       <ReviewsSection />
       <Wave></Wave>
     </div>
