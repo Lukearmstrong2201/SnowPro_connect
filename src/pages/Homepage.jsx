@@ -27,10 +27,13 @@ export default function Homepage() {
 
       {/* Objective Section */}
       <ObjectivesSection />
+
       {/* Feature Section */}
       <FeaturesSection />
+
       {/* Review Section */}
       <ReviewsSection />
+
       <Wave></Wave>
     </div>
   );

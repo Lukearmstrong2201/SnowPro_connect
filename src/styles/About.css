@@ -4,88 +4,180 @@ body {
   padding: 0;
 }
 
+.snow-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.snowflake {
+  position: absolute;
+  top: -10px;
+  left: calc(100% * var(--x));
+  width: 6px;
+  height: 6px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.9;
+  animation: snowfall var(--duration) linear infinite;
+  filter: blur(1px);
+}
+
+.snowflake:nth-child(odd) {
+  width: 4px;
+  height: 4px;
+  opacity: 0.6;
+}
+
+@keyframes snowfall {
+  to {
+    transform: translateY(110vh);
+  }
+}
+
 .team-container {
-  background: linear-gradient(to bottom, #ffffff, #f5f5f5);
-  padding: 70px;
+  background: linear-gradient(to bottom, #ffffff, #f7f7f7);
+  padding: 90px 50px;
   position: relative;
-  margin-top: -2px;
   z-index: 10;
 }
 
 .team-container h2 {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #fff;
-  background-color: #ff6a00;
-  padding: 12px 36px;
-  border-radius: 18px;
-  width: fit-content;
-  margin: 0 auto 40px auto;
+  font-size: 2.4rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 60px;
+  color: #222;
+  position: relative;
+}
+
+.team-container h2::after {
+  content: "";
+  width: 60px;
+  height: 4px;
+  background: #ff6a00;
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 10px;
 }
 
 .team-section {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 40px;
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
+  display: flex;
+  gap: 60px;
+  align-items: center;
   flex-wrap: wrap;
 }
 
-.team-card {
-  background-color: #ffffff;
-  padding: 25px 30px;
-  border-radius: 16px;
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-  width: 55%;
-  min-width: 300px;
-  color: #333;
-  line-height: 1.6;
-}
-
-/* IMAGE + INFO COLUMN (flexbox!) */
-.team-image-wrapper {
+.team-profile {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
+  width: 320px;
+  gap: 20px;
 }
 
-.team-image {
+.profile-image-wrapper {
+  width: 330px;
+  height: 330px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  background: linear-gradient(135deg, #ff6a00, #ff9f3f);
   border-radius: 50%;
-  height: 240px;
-  width: 240px;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+.profile-image {
+  width: 300px !important;
+  height: 300px !important;
   object-fit: cover;
-  border: 6px solid #ff6a00;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  border-radius: 50%;
+  border: 5px solid #fff;
 }
 
-.team-info {
-  background: #ffffff;
-  padding: 15px 20px;
-  border-radius: 14px;
+.profile-details {
+  background: #fff;
+  padding: 20px 24px;
+  border-radius: 16px;
   text-align: center;
-  width: 240px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  width: 100%;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
 }
 
-.team-info h3 {
-  font-size: 1.25rem;
-  margin-bottom: 5px;
+.profile-details h3 {
+  font-size: 1.5rem;
   font-weight: 700;
 }
 
-.team-info p {
-  margin: 4px 0;
+.profile-details .role {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ff6a00;
+  margin: 4px 0 12px 0;
+}
+
+.credentials {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.credentials li {
+  padding: 6px 0;
   font-size: 0.95rem;
-  color: #555;
+  color: #444;
+}
+
+.founder-signature {
+  font-family: "Pacifico", cursive;
+  font-size: 1.6rem;
+  margin-top: 20px;
+  color: #ff6a00;
+  text-align: right;
+  opacity: 0.9;
+}
+
+/* RIGHT COLUMN — Text */
+.team-text {
+  flex: 1;
+  background: #ffffff;
+  padding: 35px 40px;
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  line-height: 1.75;
+  max-width: 650px;
+}
+
+.team-text p {
+  margin-bottom: 18px;
+  color: #333;
+}
+
+.intro-quote {
+  font-size: 1.2rem;
+  font-style: italic;
+  margin-bottom: 25px;
+  padding-left: 20px;
+  border-left: 4px solid #ff6a00;
+  color: #444;
 }
 
 /* MOBILE */
-@media (max-width: 800px) {
-  .team-card {
-    width: 100%;
+@media (max-width: 900px) {
+  .team-section {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .team-text {
+    max-width: 100%;
   }
 }
 
@@ -122,7 +214,7 @@ body {
   margin: 0 auto;
   padding: 0 20px;
   text-align: left;
-  color: ;
+  color: white;
 }
 
 .about-hero-bg {

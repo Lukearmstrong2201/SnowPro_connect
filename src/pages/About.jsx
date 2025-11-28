@@ -1,16 +1,16 @@
 "use client";
-import React from "react";
 import Wave from "../components/Wave";
 import instructorWalk from "../assets/instructor-walk.jpg";
 import bookLesson from "../assets/book-with-ease.png";
 import stayconnected from "../assets/stay-connected.jpg";
 import instructor from "../assets/carving.jpg";
-import teamImage from "../assets/teamImage.jpg";
+import SnowParticlesAnimation from "../components/SnowParticlesAnimation";
 import Mountain from "../components/Mountain";
 import AboutCard from "../components/AboutCard";
 
 import { motion } from "framer-motion";
 import "../styles/About.css";
+import FounderSection from "../components/FounderSection";
 
 export default function About() {
   const sections = [
@@ -26,7 +26,7 @@ export default function About() {
       text: "Send a request and receive confirmation all within the platform. No phone calls, no hassle — just skiing.",
       image: bookLesson,
       reverse: true,
-      contain: true, // this one uses contain-fit
+      contain: true,
     },
     {
       title: "Stay Connected",
@@ -39,7 +39,10 @@ export default function About() {
 
   return (
     <>
+      {/* Hero Section */}
       <div className="about-hero">
+        <SnowParticlesAnimation />
+
         <Mountain />
         <div className="about-hero-overlay" />
         <img
@@ -66,41 +69,18 @@ export default function About() {
           </p>
         </div>
       </div>
+
+      {/*Founder Section*/}
       <div className="team-container">
-        <h2>Meet The Founder</h2>
-        <div className="team-section">
-          <div className="team-card">
-            <p>
-              Hi everyone! I'm <strong>Luke</strong>, the founder of this
-              platform and a former snowboard instructor. During my time
-              teaching, I saw firsthand how overwhelming the demand on ski
-              schools can be—leaving many guests without lessons and many
-              instructors wishing they had more flexibility.
-            </p>
-            <p>
-              This app was created to solve that problem. I wanted to make it
-              easier for guests to find qualified snowboard instructors, give
-              instructors the freedom to freelance, and help reduce pressure on
-              ski schools during peak seasons.
-            </p>
-            <p>
-              My goal is simple: connect riders with instructors quickly,
-              easily, and reliably—so no one misses out on an amazing day on the
-              mountain.
-            </p>
-          </div>
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          Meet The Founder
+        </motion.h2>
 
-          <div className="team-image-wrapper">
-            <img src={teamImage} className="team-image" alt="Founder" />
-
-            <div className="team-info">
-              <h3>Luke Armstrong</h3>
-              <p>Founder & Developer</p>
-              <p>CASI Level 3 Snowboard Instructor</p>
-              <p>Freestyle & Backcountry Training</p>
-            </div>
-          </div>
-        </div>
+        <FounderSection />
       </div>
 
       <main className="about-container">
