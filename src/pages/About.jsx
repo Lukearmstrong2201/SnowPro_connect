@@ -6,6 +6,7 @@ import bookLesson from "../assets/book-with-ease.png";
 import stayconnected from "../assets/stay-connected.jpg";
 import instructor from "../assets/carving.jpg";
 import teamImage from "../assets/teamImage.jpg";
+import Mountain from "../components/Mountain";
 
 import { motion } from "framer-motion";
 import "../styles/About.css";
@@ -35,13 +36,7 @@ export default function About() {
   return (
     <>
       <div className="about-hero">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 319">
-          <path
-            fill="#fff"
-            fillOpacity="1"
-            d="M0,96L180,288L360,192L540,320L720,96L900,224L1080,128L1260,224L1440,128L1440,320L1260,320L1080,320L900,320L720,320L540,320L360,320L180,320L0,320Z"
-          ></path>
-        </svg>
+        <Mountain />
         <div className="about-hero-overlay" />
         <img
           src={instructor}

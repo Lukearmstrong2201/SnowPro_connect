@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/Homepage.css";
 import visionImg from "../assets/vision.avif";
 import missionImg from "../assets/mission.jpg";
+import ReviewsSection from "../components/ReviewSection";
 import Wave from "../components/Wave";
 
 export default function Homepage() {
@@ -92,40 +93,7 @@ export default function Homepage() {
         </div>
       </section>
 
-      <section className="reviews-section">
-        <h2 className="section-title">User Reviews</h2>
-        <div className="review-cards">
-          <div className="review-card">
-            <p className="review-text">
-              "Amazing experience! Learned so much!"
-            </p>
-            <div className="star-rating">⭐⭐⭐⭐⭐</div>
-            <p>- Name</p>
-          </div>
-          <div className="review-card">
-            <p className="review-text">
-              "The application works great. Instructors were quick to respond,
-              and the user experience was smooth. Highly recommended!"
-            </p>
-            <div className="star-rating">⭐⭐⭐⭐⭐</div>
-            <p>- Name</p>
-          </div>
-          <div className="review-card">
-            <p className="review-text">
-              "I had a blast! The lessons were so much fun."
-            </p>
-            <div className="star-rating">⭐⭐⭐⭐⭐</div>
-            <p>- Name</p>
-          </div>
-          <div className="review-card">
-            <p className="review-text">
-              "Fantastic service! Highly recommend."
-            </p>
-            <div className="star-rating">⭐⭐⭐⭐⭐</div>
-            <p>- Name</p>
-          </div>
-        </div>
-      </section>
+      <ReviewsSection />
       <Wave></Wave>
     </div>
   );

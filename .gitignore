@@ -1,4 +1,6 @@
-# Logs
+# ====================================
+# LOG FILES
+# ====================================
 logs
 *.log
 npm-debug.log*
@@ -7,38 +9,51 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# ====================================
+# FRONTEND (React/Vite)
+# ====================================
+node_modules/
+frontend/node_modules/
+dist/
+dist-ssr/
+build/
 *.local
+*.tsbuildinfo
 
-# Dependencies
-node_modules
-dist
-dist-ssr
-*.local
+# Vite local cache
+.vite/
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+# macOS junk
+*.DS_Store
 
+# ====================================
+# BACKEND (FastAPI / Python)
+# ====================================
 # Virtual environments
 .venv/
-backend/fastapienv/
+venv/
+env/
+fastapienv/
 
-# Python files
-*.pyc
+# Python cache
 __pycache__/
+*.pyc
 
-# Environment files
+# SQLite database (local only)
+users.db
+
+# Local environment variables
 .env
+.env.*
 
-#frontend
-frontend/node_modules/
+# ====================================
+# MISC
+# ====================================
+# Editor configs
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Temporary or OS files
+.DS_Store
+

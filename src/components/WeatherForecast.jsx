@@ -1,4 +1,3 @@
-import React from "react";
 import "../styles/WeatherForecast.css";
 
 export default function WeatherForecast({ forecastData }) {

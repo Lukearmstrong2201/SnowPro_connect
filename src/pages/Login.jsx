@@ -12,6 +12,8 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   const handleLoginClick = async (e) => {
+    console.log("Email:", email);
+    console.log("Password:", password);
     e.preventDefault();
 
     try {

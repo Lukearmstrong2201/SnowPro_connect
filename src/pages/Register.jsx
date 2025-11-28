@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InputField from "../components/InputField";
 import SelectField from "../components/SelectField";
@@ -59,7 +59,7 @@ export default function Register() {
       }
 
       alert("Registration successful!");
-      // Optionally: redirect to login or home
+
       navigate("/login");
     } catch (error) {
       alert(error.message || "Error during registration.");

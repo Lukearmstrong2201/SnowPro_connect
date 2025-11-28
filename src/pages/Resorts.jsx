@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "../styles/Resorts.css";
 import { getResortsList, getSkiResortData } from "../services/api";
 import { fetchWeatherForecast } from "../services/weatherService";
