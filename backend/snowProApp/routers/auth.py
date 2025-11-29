@@ -103,26 +103,49 @@ def get_current_user(token: str = Depends(oauth2_bearer), db: Session = Depends(
 async def create_user(db: db_dependency, create_user_request: CreateUserRequest):
 
     try:
-        # Prevent bcrypt crash on overly long password
+        # ------------------------------
+        # Password safety
+        # ------------------------------
         pw_bytes = create_user_request.password.encode("utf-8")
         if len(pw_bytes) > 72:
             raise HTTPException(
                 status_code=400,
                 detail="Password must be 72 characters or fewer."
             )
+        
+        # ------------------------------
+        # Check if email exists
+        # ------------------------------
 
         existing_user = db.query(Users).filter(Users.email == create_user_request.email).first()
         if existing_user:
             raise HTTPException(status_code=400, detail="Email already registered")
+        
+        # ------------------------------
+        # First registered user becomes ADMIN
+        # All others cannot pick admin role
+        # ------------------------------
+
+        is_first_user = db.query(Users).count() == 0
+
+        if is_first_user:
+            assigned_role = "admin"
+        else:
+            # force student/instructor only
+            assigned_role = create_user_request.role
 
         hashed_password = bcrypt_context.hash(create_user_request.password)
+
+        # ------------------------------
+        # Create base user
+        # ------------------------------
 
         user = Users(
             first_name=create_user_request.first_name,
             last_name=create_user_request.last_name,
             email=create_user_request.email,
             hashed_password=hashed_password,
-            role=create_user_request.role,
+            role= assigned_role,
             contact=create_user_request.contact,
             address=create_user_request.address,
             date_of_birth=create_user_request.date_of_birth,
@@ -134,11 +157,14 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
         db.commit()
         db.refresh(user)
 
-        if create_user_request.role == "student":
+        # ------------------------------
+        # If admin → DO NOT create student/instructor profile
+        # ------------------------------
+        if assigned_role == "student":
             student = Students(user_id=user.id)
             db.add(student)
 
-        elif create_user_request.role == "instructor":
+        elif assigned_role == "instructor":
             if not (
                 create_user_request.certificate_body
                 and create_user_request.level_of_qualification
@@ -156,7 +182,8 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
 
         db.commit()
 
-        return {"message": "User created successfully", "user_id": user.id}
+        return {"message": "User created successfully", "user_id": user.id,"role": assigned_role,
+            "first_user_admin": is_first_user}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")

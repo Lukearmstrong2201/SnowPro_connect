@@ -26,7 +26,7 @@ class UserRequest(BaseModel):
     address: str
     language: str
     date_of_birth: date
-    role: Literal["student", "instructor", "admin"]
+    role: Literal["student", "instructor"]
 
     class Config:
         from_attributes = True

@@ -33,7 +33,7 @@ class Users(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, nullable=False)
     hashed_password = Column(String, nullable=False)  
-    role = Column(String, nullable=False)  # Either "student", "instructor or admin"
+    role = Column(String, nullable=False, default='student')  # Either "student", "instructor or admin"
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     contact = Column(String, nullable=False)  
