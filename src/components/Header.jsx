@@ -15,6 +15,7 @@ export default function Header() {
     navigate("/");
   };
 
+  // Dynamically generate the correct dashboard link
   const getDashboardLink = () => {
     if (!user) return null;
 
@@ -24,7 +25,7 @@ export default function Header() {
       case "instructor":
         return { path: "/instructor/dashboard", label: "Instructor Panel" };
       case "admin":
-        return { path: "/admin/dashboard", label: "Admin" };
+        return { path: "/admin/dashboard", label: "Admin Panel" };
       default:
         return null;
     }
@@ -39,17 +40,23 @@ export default function Header() {
           <Logo className="logo-svg" />
           <h1>SnowPro Connect</h1>
         </div>
+
         <nav>
           <ul className="nav-links">
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/about">About</Link>
-            </li>
-            <li>
-              <Link to="/resorts">Resorts</Link>
-            </li>
+            {/* Display public pages ONLY when logged out */}
+            {!user && (
+              <>
+                <li>
+                  <Link to="/">Home</Link>
+                </li>
+                <li>
+                  <Link to="/about">About</Link>
+                </li>
+                <li>
+                  <Link to="/resorts">Resorts</Link>
+                </li>
+              </>
+            )}
 
             {/* Dashboard link only when logged in */}
             {dashboard && (

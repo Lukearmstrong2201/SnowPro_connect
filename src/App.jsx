@@ -14,6 +14,7 @@ import Booking from "./pages/Booking";
 import EditProfile from "./pages/EditProfile";
 import { useAuth } from "./context/AuthContext";
 import ProtectedRoute from "./utils/ProtectedRoute";
+import RedirectAuthenticated from "./components/auth/RedirectAuthenticated";
 
 function App() {
   const { user } = useAuth();
@@ -24,10 +25,32 @@ function App() {
       <main className="main-content">
         <Routes>
           {/* ---------- PUBLIC ROUTES ---------- */}
-          <Route path="/" element={<Homepage />} />
+          <Route
+            path="/login"
+            element={
+              <RedirectAuthenticated>
+                <Login />
+              </RedirectAuthenticated>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <RedirectAuthenticated>
+                <Register />
+              </RedirectAuthenticated>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <RedirectAuthenticated>
+                <Homepage />
+              </RedirectAuthenticated>
+            }
+          />
           <Route path="/about" element={<About />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+
           <Route path="/resorts" element={<Resort />} />
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/booking" element={<Booking />} />
