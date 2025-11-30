@@ -130,4 +130,26 @@ async def upload_profile_picture(
 
     return {"message": "Profile picture uploaded successfully", "path": user.profile_picture}
 
+#MAKE USER ADMIN
+@router.post("/{user_id}/make-admin", status_code=200)
+async def promote_to_admin(
+    user_id: int,
+    db: db_dependency,
+    current_user: user_dependency
+):
+
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Only admins can promote users")
+
+    user = db.query(Users).filter(Users.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user.role = "admin"
+    db.commit()
+    db.refresh(user)
+
+    return {"message": f"User {user_id} promoted to admin"}
+
+
 
