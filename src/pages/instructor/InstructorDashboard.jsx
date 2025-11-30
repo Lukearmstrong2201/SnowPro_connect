@@ -1,7 +1,7 @@
-import "../styles/StudentDashboard.css";
+import "../../styles/StudentDashboard.css";
 import { useState, useEffect } from "react";
-import InstructorAvailabilityForm from "../components/InstructorAvailabilityForm";
-import AvailableSlots from "../components/AvailableSlots"; // Import the AvailableSlots component
+import InstructorAvailabilityForm from "../../components/InstructorAvailabilityForm";
+import AvailableSlots from "../../components/AvailableSlots";
 import axios from "axios";
 
 export default function InstructorDashboard() {

@@ -3,8 +3,9 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import Homepage from "./pages/HomePage";
 import Header from "./components/Header";
-import StudentDashboard from "./pages/StudentDashboard";
-import InstructorDashboard from "./pages/InstructorDashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import StudentDashboard from "./pages/student/StudentDashboard";
+import InstructorDashboard from "./pages/instructor/InstructorDashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Resort from "./pages/Resorts";
@@ -12,6 +13,7 @@ import About from "./pages/About";
 import Booking from "./pages/Booking";
 import EditProfile from "./pages/EditProfile";
 import { useAuth } from "./context/AuthContext";
+import ProtectedRoute from "./utils/ProtectedRoute";
 
 function App() {
   const { user } = useAuth();
@@ -21,6 +23,7 @@ function App() {
       <Header />
       <main className="main-content">
         <Routes>
+          {/* ---------- PUBLIC ROUTES ---------- */}
           <Route path="/" element={<Homepage />} />
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
@@ -28,18 +31,43 @@ function App() {
           <Route path="/resorts" element={<Resort />} />
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/booking" element={<Booking />} />
+
+          {/* ---------- STUDENT DASHBOARD ---------- */}
           <Route
-            path="/dashboard"
+            path="/student/dashboard"
             element={
-              user?.role === "student" ? (
+              <ProtectedRoute allowedRoles={["student"]}>
                 <StudentDashboard />
-              ) : user?.role === "instructor" ? (
-                <InstructorDashboard />
-              ) : (
-                <Navigate to="/" />
-              )
+              </ProtectedRoute>
             }
           />
+
+          {/* ---------- INSTRUCTOR DASHBOARD ---------- */}
+          <Route
+            path="/instructor/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["instructor"]}>
+                <InstructorDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ---------- ADMIN DASHBOARD ---------- */}
+
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ---------- UNAUTHORIZED PAGE ---------- */}
+          <Route path="/unauthorized" element={<h2>Access Denied</h2>} />
+
+          {/* ---------- DEFAULT FALLBACK ---------- */}
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </main>
     </div>

@@ -1,6 +1,6 @@
-import "../styles/StudentDashboard.css";
+import "../../styles/StudentDashboard.css";
 
-export default function Dashboard() {
+export default function StudentDashboard() {
   return (
     <>
       <section className="dashboard-container">

@@ -1,5 +1,3 @@
-import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "../styles/Header.css";
@@ -17,7 +15,22 @@ export default function Header() {
     navigate("/");
   };
 
-  console.log("Header user:", user);
+  const getDashboardLink = () => {
+    if (!user) return null;
+
+    switch (user.role) {
+      case "student":
+        return { path: "/student/dashboard", label: "My Dashboard" };
+      case "instructor":
+        return { path: "/instructor/dashboard", label: "Instructor Panel" };
+      case "admin":
+        return { path: "/admin/dashboard", label: "Admin" };
+      default:
+        return null;
+    }
+  };
+
+  const dashboard = getDashboardLink();
 
   return (
     <header className="header">
@@ -37,20 +50,11 @@ export default function Header() {
             <li>
               <Link to="/resorts">Resorts</Link>
             </li>
-            {/* Conditionally render dashboard link based on user role */}
-            {user?.role === "student" && (
+
+            {/* Dashboard link only when logged in */}
+            {dashboard && (
               <li>
-                <Link to="/dashboard">My Dashboard</Link>
-              </li>
-            )}
-            {user?.role === "instructor" && (
-              <li>
-                <Link to="/dashboard">Instructor Panel</Link>
-              </li>
-            )}
-            {user?.role === "admin" && (
-              <li>
-                <Link to="/admin">Admin</Link>
+                <Link to={dashboard.path}>{dashboard.label}</Link>
               </li>
             )}
           </ul>

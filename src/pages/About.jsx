@@ -7,7 +7,6 @@ import instructor from "../assets/carving.jpg";
 import SnowParticlesAnimation from "../components/SnowParticlesAnimation";
 import Mountain from "../components/Mountain";
 import AboutCard from "../components/AboutCard";
-
 import { motion } from "framer-motion";
 import "../styles/About.css";
 import FounderSection from "../components/FounderSection";
