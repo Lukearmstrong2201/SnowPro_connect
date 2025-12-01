@@ -1,0 +1,150 @@
+/* MAIN WRAPPER */
+.instructor-dashboard {
+  width: 100%;
+  overflow-x: hidden; /* good */
+}
+
+/* -------------------------------------------------- */
+/* WELCOME SECTION                                     */
+/* -------------------------------------------------- */
+.welcome-section {
+  width: 100%;
+  background: #1f2733;
+  color: white;
+
+  padding: 40px 0;
+}
+
+/* Centered inner container */
+.welcome-content {
+  max-width: 1200px;
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 40px;
+  min-width: 0;
+}
+
+.welcome-content > * {
+  min-width: 0;
+}
+
+/* -------------------------------------------------- */
+/* LEFT SIDE                                           */
+/* -------------------------------------------------- */
+.welcome-left {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+
+.welcome-greeting-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.welcome-sub {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.welcome-name {
+  font-size: 42px;
+  font-weight: 600;
+  margin: 0;
+  color: #fa7218;
+}
+
+/* -------------------------------------------------- */
+/* CERTIFICATE + STAR RATING ROW                      */
+/* -------------------------------------------------- */
+.badge-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.rating-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+}
+
+.star-rating {
+  display: flex;
+  gap: 6px;
+  white-space: nowrap;
+  fill: #fa7218 !important;
+  color: #fa7218 !important;
+}
+
+.star-icon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  fill: #ff7f2a;
+}
+
+.rating-value {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* -------------------------------------------------- */
+/* RIGHT SIDE                                          */
+/* -------------------------------------------------- */
+.welcome-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  min-width: 0;
+  max-width: 40%;
+}
+
+.welcome-right * {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* -------------------------------------------------- */
+/* RESPONSIVE DESIGN                                   */
+/* -------------------------------------------------- */
+
+@media (max-width: 890px) {
+  .welcome-content {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+
+  .welcome-right {
+    align-items: center;
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .welcome-greeting-row {
+    white-space: normal; /* allow wrapping on small devices */
+  }
+
+  .welcome-name {
+    font-size: 34px;
+    color: #fa7218;
+  }
+
+  .badge-row {
+    justify-content: center;
+    flex-wrap: nowrap;
+  }
+}

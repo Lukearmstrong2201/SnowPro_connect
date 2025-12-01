@@ -34,7 +34,7 @@ async def get_own_instructor_profile(db: db_dependency, user: user_dependency):
         raise HTTPException(status_code=404, detail="Instructor profile not found")
 
     return InstructorResponse(
-        id=user.id,
+        id=instructor.id,
         first_name=user.first_name,
         last_name=user.last_name,
         email=user.email,
