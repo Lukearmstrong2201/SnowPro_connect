@@ -3,7 +3,7 @@
 # This will be the record of what is actually inside the database table
 
 from database import Base
-from sqlalchemy import Column, Integer, String, Date, DateTime, ForeignKey, Enum, Boolean, Text, Time
+from sqlalchemy import Column, Float, Integer, String, Date, DateTime, ForeignKey, Enum, Boolean, Text, Time
 from sqlalchemy.orm import relationship
 import enum
 from sqlalchemy import PrimaryKeyConstraint
@@ -80,6 +80,7 @@ class Instructors(Base):
     certificate_body = Column(Enum(CertificationBodyEnum), nullable=False)  
     level_of_qualification = Column(Enum(QualificationLevelEnum), nullable=False)  
     years_of_experience = Column(Integer, nullable=False)
+    hourly_rate = Column(Float, nullable=True)
     local_resort = Column(String) 
     
     user = relationship("Users", back_populates="instructor")
