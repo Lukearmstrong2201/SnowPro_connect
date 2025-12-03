@@ -48,41 +48,63 @@ async def get_own_instructor_profile(db: db_dependency, user: user_dependency):
         level_of_qualification=instructor.level_of_qualification,
         years_of_experience=instructor.years_of_experience,
         local_resort=instructor.local_resort,
-        profile_picture=user.profile_picture
-    )
-
-# GET a specific instructor by ID
-@router.get("/{instructor_id}", status_code=200)
-async def get_instructor(instructor_id: int, db: db_dependency, user: user_dependency):
-    instructor = db.query(Instructors).filter(Instructors.id == instructor_id).first()
-    
-    if user.role != "admin" and instructor.user_id != user.id:
-        raise HTTPException(status_code=403, detail="Access denied")
-    
-    if not instructor:
-        raise HTTPException(status_code=404, detail="Instructor not found")
-
-    # Fetch the associated user for name details
-    instructor_user = instructor.user 
-
-    return InstructorResponse(
-        id=instructor_user.id,
-        first_name=instructor_user.first_name,
-        last_name=instructor_user.last_name,
-        email=instructor_user.email,
-        contact=instructor_user.contact,
-        address=instructor_user.address,
-        language=instructor_user.language,
-        date_of_birth=instructor_user.date_of_birth,
-        role=instructor_user.role,
-        is_active=instructor_user.is_active,
-        certificate_body=instructor.certificate_body,
-        level_of_qualification=instructor.level_of_qualification,
-        years_of_experience=instructor.years_of_experience,
-        local_resort=instructor.local_resort,
-        profile_picture=instructor_user.profile_picture,
+        profile_picture=user.profile_picture,
         hourly_rate=instructor.hourly_rate
     )
+
+
+# GET the instructor's hourly rate
+@router.get("/hourly-rate")
+def get_hourly_rate(
+    current_user = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    # Must be an instructor
+    if current_user.role != "instructor":
+        raise HTTPException(status_code=403, detail="Only instructors can access this.")
+
+    # Get instructor row via user_id 
+    instructor = (
+        db.query(Instructors)
+        .filter(Instructors.user_id == current_user.id)
+        .first()
+    )
+
+    if not instructor:
+        raise HTTPException(status_code=404, detail="Instructor profile not found.")
+
+    return {instructor.hourly_rate}
+
+
+@router.patch("/update-hourly-rate")
+async def update_hourly_rate(
+    data: InstructorUpdate,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    if current_user.role != "instructor":
+        raise HTTPException(status_code=403, detail="Only instructors can update this.")
+
+    instructor = (
+        db.query(Instructors)
+        .filter(Instructors.user_id == current_user.id)
+        .first()
+    )
+
+    if not instructor:
+        raise HTTPException(status_code=404, detail="Instructor not found.")
+
+    if data.hourly_rate is None:
+        raise HTTPException(status_code=400, detail="hourly_rate is required.")
+
+    instructor.hourly_rate = data.hourly_rate
+
+    db.commit()
+    db.refresh(instructor)
+
+    return {instructor.hourly_rate}
+
+
 
 # PATCH to update instructor's local resort
 @router.patch("/update-local-resort", status_code=200)
@@ -186,4 +208,37 @@ async def set_availability(
         print("Error:", e)
         db.rollback()  # Rollback in case of any error
         raise HTTPException(status_code=500, detail="Internal Server Error")
+    
 
+# GET a specific instructor by ID
+@router.get("/{instructor_id}", status_code=200)
+async def get_instructor(instructor_id: int, db: db_dependency, user: user_dependency):
+    instructor = db.query(Instructors).filter(Instructors.id == instructor_id).first()
+    
+    if user.role != "admin" and instructor.user_id != user.id:
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    if not instructor:
+        raise HTTPException(status_code=404, detail="Instructor not found")
+
+    # Fetch the associated user for name details
+    instructor_user = instructor.user 
+
+    return InstructorResponse(
+        id=instructor_user.id,
+        first_name=instructor_user.first_name,
+        last_name=instructor_user.last_name,
+        email=instructor_user.email,
+        contact=instructor_user.contact,
+        address=instructor_user.address,
+        language=instructor_user.language,
+        date_of_birth=instructor_user.date_of_birth,
+        role=instructor_user.role,
+        is_active=instructor_user.is_active,
+        certificate_body=instructor.certificate_body,
+        level_of_qualification=instructor.level_of_qualification,
+        years_of_experience=instructor.years_of_experience,
+        local_resort=instructor.local_resort,
+        profile_picture=instructor_user.profile_picture,
+        hourly_rate=instructor.hourly_rate
+    )
