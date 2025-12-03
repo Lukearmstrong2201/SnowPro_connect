@@ -68,3 +68,22 @@ export async function updateLocalResort(newResort) {
   // response is { message, local_resort }
   return res.data;
 }
+
+/**
+ * GET /instructors/hourly-rate
+ */
+export async function getHourlyRate() {
+  const res = await api.get(`/hourly-rate`);
+  return res.data.hourly_rate;
+}
+
+/**
+ * PATCH /instructors/update-hourly-rate
+ */
+export async function updateHourlyRate(newRate) {
+  const res = await api.patch(`/update-hourly-rate`, {
+    hourly_rate: newRate,
+  });
+
+  return res.data.hourly_rate;
+}
