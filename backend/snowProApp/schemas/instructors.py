@@ -23,6 +23,7 @@ class InstructorResponse(UserResponse):
     certificate_body: CertificationBodyEnum
     level_of_qualification: QualificationLevelEnum
     years_of_experience: int
+    hourly_rate: Optional[float] = None
     local_resort: Optional[str] = None
     profile_picture: Optional[str] = None
     class Config:
@@ -38,6 +39,7 @@ class InstructorCreateUpdate(BaseModel):
 
 class InstructorUpdate(BaseModel):
     local_resort: Annotated[Optional[str], constr(max_length=100)] = None
+    hourly_rate: Optional[float] = None
                          
     @field_validator("local_resort")
     @classmethod

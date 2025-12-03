@@ -80,7 +80,8 @@ async def get_instructor(instructor_id: int, db: db_dependency, user: user_depen
         level_of_qualification=instructor.level_of_qualification,
         years_of_experience=instructor.years_of_experience,
         local_resort=instructor.local_resort,
-        profile_picture=instructor_user.profile_picture
+        profile_picture=instructor_user.profile_picture,
+        hourly_rate=instructor.hourly_rate
     )
 
 # PATCH to update instructor's local resort
