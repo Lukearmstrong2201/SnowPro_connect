@@ -68,3 +68,41 @@ export async function updateLocalResort(newResort) {
   // response is { message, local_resort }
   return res.data;
 }
+
+/**
+ * GET /instructors/discipline
+ */
+export async function fetchInstructorDiscipline() {
+  const res = await api.get(`/discipline`);
+  return res.data; // { discipline: "ski" }
+}
+
+/**
+ * PATCH /instructors/discipline
+ */
+export async function updateInstructorDiscipline(newDiscipline) {
+  const res = await api.patch(`/discipline`, {
+    discipline: newDiscipline,
+  });
+
+  return res.data; // { message, discipline }
+}
+
+/**
+ * GET /instructors/specialties
+ */
+export async function fetchInstructorSpecialties() {
+  const res = await api.get(`/specialties`);
+  return res.data; // { specialties: [...] }
+}
+
+/**
+ * PATCH /instructors/specialties
+ */
+export async function updateInstructorSpecialties(newSpecialties) {
+  const res = await api.patch(`/specialties`, {
+    specialties: newSpecialties, // array of strings
+  });
+
+  return res.data; // { message, specialties }
+}
