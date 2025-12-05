@@ -1,4 +1,4 @@
-from typing import Annotated, Optional
+from typing import Annotated, Optional, List
 from pydantic import BaseModel, constr, field_validator
 from schemas.users import UserResponse 
 from enum import Enum
@@ -24,6 +24,8 @@ class InstructorResponse(UserResponse):
     level_of_qualification: QualificationLevelEnum
     years_of_experience: int
     hourly_rate: Optional[float] = None
+    discipline: Optional[str] = None
+    specialties: Optional[List[str]] = None
     local_resort: Optional[str] = None
     profile_picture: Optional[str] = None
     class Config:
@@ -40,6 +42,8 @@ class InstructorCreateUpdate(BaseModel):
 class InstructorUpdate(BaseModel):
     local_resort: Annotated[Optional[str], constr(max_length=100)] = None
     hourly_rate: Optional[float] = None
+    discipline: Optional[str] = None
+    specialties: Optional[List[str]] = None
                          
     @field_validator("local_resort")
     @classmethod

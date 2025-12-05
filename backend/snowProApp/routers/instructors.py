@@ -3,7 +3,7 @@ from models import Instructors, Users, InstructorAvailability, BookedSlot
 from database import SessionLocal
 from sqlalchemy.orm import Session
 from .auth import get_current_user
-from typing import Annotated, List
+from typing import Annotated, List, Optional
 from schemas.instructors import InstructorResponse, InstructorUpdate
 from schemas.availability import AvailabilityRequest, AvailabilitySlot, InstructorAvailabilityResponse
 from datetime import date, datetime
@@ -49,7 +49,9 @@ async def get_own_instructor_profile(db: db_dependency, user: user_dependency):
         years_of_experience=instructor.years_of_experience,
         local_resort=instructor.local_resort,
         profile_picture=user.profile_picture,
-        hourly_rate=instructor.hourly_rate
+        hourly_rate=instructor.hourly_rate,
+        discipline=instructor.discipline,
+        specialties=instructor.specialties
     )
 
 
@@ -103,7 +105,6 @@ async def update_hourly_rate(
     db.refresh(instructor)
 
     return {instructor.hourly_rate}
-
 
 
 # PATCH to update instructor's local resort
@@ -242,3 +243,157 @@ async def get_instructor(instructor_id: int, db: db_dependency, user: user_depen
         profile_picture=instructor_user.profile_picture,
         hourly_rate=instructor.hourly_rate
     )
+
+# PATCH update instructors profile
+@router.patch("/update-profile", status_code=200)
+async def update_profile(
+    update_data: InstructorUpdate,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    if current_user.role != "instructor":
+        raise HTTPException(status_code=403, detail="Only instructors can update this.")
+
+    instructor = db.query(Instructors).filter(Instructors.user_id == current_user.id).first()
+    if not instructor:
+        raise HTTPException(status_code=404, detail="Instructor not found.")
+
+    # Only update fields present in request
+    if update_data.local_resort is not None:
+        instructor.local_resort = update_data.local_resort
+    if update_data.hourly_rate is not None:
+        instructor.hourly_rate = update_data.hourly_rate
+    if update_data.discipline is not None:
+        instructor.discipline = update_data.discipline.lower()
+    if update_data.specialties is not None:
+        # ensure list of strings
+        instructor.specialties = [str(s) for s in update_data.specialties]
+
+    db.commit()
+    db.refresh(instructor)
+    return {
+        "message": "Profile updated",
+        "discipline": instructor.discipline,
+        "specialties": instructor.specialties,
+        "hourly_rate": instructor.hourly_rate,
+        "local_resort": instructor.local_resort
+    }
+
+
+@router.get("", response_model=List[InstructorResponse])
+async def get_instructors_by_filter(
+    db: db_dependency,
+    resort: Optional[str] = Query(None, min_length=1),
+    discipline: Optional[str] = Query(None),
+    specialty: Optional[str] = Query(None)
+):
+    query = db.query(Instructors)
+    if resort:
+        query = query.filter(Instructors.local_resort == resort.lower())
+    if discipline:
+        query = query.filter(Instructors.discipline == discipline.lower())
+    if specialty:
+        # search for specialty inside JSON array 
+        query = query.filter(Instructors.specialties != None).filter(Instructors.specialties.like(f'%{specialty}%'))
+
+    instructors = query.all()
+
+#GET instrutor discipline, 'Ski or Snowboard'
+@router.get("/me/discipline")
+async def get_instructor_discipline(
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    if current_user.role != "instructor":
+        raise HTTPException(status_code=403, detail="Only instructors can access this.")
+
+    instructor = (
+        db.query(Instructors)
+        .filter(Instructors.user_id == current_user.id)
+        .first()
+    )
+
+    if not instructor:
+        raise HTTPException(status_code=404, detail="Instructor profile not found.")
+
+    return {instructor.discipline}
+
+#PATCH instructor discipline 'Ski or Snowboard"
+@router.patch("/me/discipline")
+async def update_instructor_discipline(
+    update_data: InstructorUpdate,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    if current_user.role != "instructor":
+        raise HTTPException(status_code=403, detail="Only instructors can update this.")
+
+    instructor = (
+        db.query(Instructors)
+        .filter(Instructors.user_id == current_user.id)
+        .first()
+    )
+
+    if not instructor:
+        raise HTTPException(status_code=404, detail="Instructor profile not found.")
+
+    if update_data.discipline is None:
+        raise HTTPException(status_code=400, detail="discipline field required.")
+
+    instructor.discipline = update_data.discipline.lower()
+
+    db.commit()
+    db.refresh(instructor)
+
+    return {"message": "Discipline updated", "discipline": instructor.discipline}
+
+
+#Get instructor specialities (List)
+@router.get("/me/specialties")
+async def get_instructor_specialties(
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    if current_user.role != "instructor":
+        raise HTTPException(status_code=403, detail="Only instructors can access this.")
+
+    instructor = (
+        db.query(Instructors)
+        .filter(Instructors.user_id == current_user.id)
+        .first()
+    )
+
+    if not instructor:
+        raise HTTPException(status_code=404, detail="Instructor profile not found.")
+
+    return {instructor.specialties or []}
+
+#PATCH instructor specialities
+@router.patch("/me/specialties")
+async def update_instructor_specialties(
+    update_data: InstructorUpdate,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    if current_user.role != "instructor":
+        raise HTTPException(status_code=403, detail="Only instructors can update this.")
+
+    instructor = (
+        db.query(Instructors)
+        .filter(Instructors.user_id == current_user.id)
+        .first()
+    )
+
+    if not instructor:
+        raise HTTPException(status_code=404, detail="Instructor profile not found.")
+
+    if update_data.specialties is None:
+        raise HTTPException(status_code=400, detail="specialties field required.")
+
+    instructor.specialties = [s.lower() for s in update_data.specialties]
+
+    db.commit()
+    db.refresh(instructor)
+
+    return {"message": "Specialties updated", "specialties": instructor.specialties}
+
