@@ -6,8 +6,16 @@ import StarRating from "../../components/icons/StarRating";
 import ResortBadge from "../../components/icons/ResortBadge";
 import CertificateBadge from "../../components/icons/CertificateBadge";
 
+import BioSection from "./sections/BioSection";
+import MessageSection from "./sections/MessageSection";
+import LessonSection from "./sections/LessonSection";
+import FinanceSection from "./sections/FinanceSection";
+
+import { User, MessageSquare, CalendarCheck, HandCoins } from "lucide-react";
+
 export default function InstructorDashboard() {
   const [instructor, setInstructor] = useState(null);
+  const [activeTab, setActiveTab] = useState("bio");
 
   useEffect(() => {
     const fetchInstructor = async () => {
@@ -60,6 +68,62 @@ export default function InstructorDashboard() {
             <ResortBadge resortName={instructor.local_resort} />
           </div>
         </div>
+      </div>
+
+      {/* BODY SECTION */}
+      <div className="dashboard-body">
+        {/* SIDEBAR */}
+        <aside className="dashboard-sidebar">
+          <h3 className="sidebar-title">Dashboard</h3>
+
+          <button
+            className={
+              activeTab === "bio" ? "sidebar-item active" : "sidebar-item"
+            }
+            onClick={() => setActiveTab("bio")}
+          >
+            <User size={18} />
+            <span>Bio</span>
+          </button>
+
+          <button
+            className={
+              activeTab === "messages" ? "sidebar-item active" : "sidebar-item"
+            }
+            onClick={() => setActiveTab("messages")}
+          >
+            <MessageSquare size={18} />
+            <span>Messages</span>
+          </button>
+
+          <button
+            className={
+              activeTab === "lessons" ? "sidebar-item active" : "sidebar-item"
+            }
+            onClick={() => setActiveTab("lessons")}
+          >
+            <CalendarCheck size={18} />
+            <span>Lessons</span>
+          </button>
+
+          <button
+            className={
+              activeTab === "finance" ? "sidebar-item active" : "sidebar-item"
+            }
+            onClick={() => setActiveTab("finance")}
+          >
+            <HandCoins size={18} />
+            <span>Finance</span>
+          </button>
+        </aside>
+
+        {/* MAIN CONTENT */}
+        <main className="dashboard-content">
+          {activeTab === "bio" && <BioSection instructor={instructor} />}
+          {activeTab === "messages" && <MessageSection />}
+          {activeTab === "lessons" && <LessonSection />}
+          {activeTab === "finance" && <FinanceSection />}
+        </main>
       </div>
     </div>
   );
